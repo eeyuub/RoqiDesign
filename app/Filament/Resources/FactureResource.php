@@ -6,7 +6,7 @@ use App\Enums\customerGender;
 use App\Enums\isActive;
 use App\Filament\Resources\FactureResource\Pages;
 use App\Filament\Resources\FactureResource\RelationManagers;
-use App\Models\Facture;
+use App\Models\facture;
 use App\Models\factureItem;
 use App\Models\Order;
 use App\Models\productOption;

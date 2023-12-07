@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\StockControlResource\Pages;
 use App\Filament\Resources\StockControlResource\RelationManagers;
 use App\Models\productOption;
-use App\Models\StockControl;
+use App\Models\stockControl;
 use App\Models\stockControleproduct;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms;

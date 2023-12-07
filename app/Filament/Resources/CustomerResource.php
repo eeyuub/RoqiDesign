@@ -90,8 +90,8 @@ class CustomerResource extends Resource
                     ])
             ->actions([
                  Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
-                Tables\Actions\viewAction::make()->hidden(fn($record)=>$record->trashed()),
-                Tables\Actions\deleteAction::make()->hidden(fn($record)=>$record->trashed())
+                Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
+                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
                 ->action(function($record){
 
                     if($record->Orders()->withTrashed()->count() > 0){

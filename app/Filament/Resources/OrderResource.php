@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\customerGender;
 use App\Enums\isActive;
 use App\Enums\payment;
-use App\Enums\Status;
+use App\Enums\status;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\SupplierResource\Schema\supplierSchema;
@@ -331,8 +331,8 @@ class OrderResource extends Resource
                     ->label('Facture')
                     ->url(fn (Order $record): string => route('downPDF',['id'=> $record->id]), shouldOpenInNewTab: true),
                 Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
-                Tables\Actions\viewAction::make()->hidden(fn($record)=>$record->trashed()),
-                Tables\Actions\deleteAction::make()->hidden(fn($record)=>$record->trashed()),
+                Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
+                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),
                 Tables\Actions\RestoreAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
             ])
