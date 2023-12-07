@@ -1,0 +1,294 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Enums\customerGender;
+use App\Enums\isActive;
+use App\Filament\Resources\FactureResource\Pages;
+use App\Filament\Resources\FactureResource\RelationManagers;
+use App\Models\Facture;
+use App\Models\factureItem;
+use App\Models\Order;
+use App\Models\productOption;
+use Filament\Actions\Action;
+use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class FactureResource extends Resource
+{
+    protected static ?string $model = Facture::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Depense Page')
+                ->description('Cette page pour créer un enregistrement Depense')
+                ->icon('heroicon-o-banknotes')->schema([
+                    TextInput::make('numeroFacture')
+                    ->label('N* Facture')
+                    // ->prefix('N* Facture')
+                    // ->hiddenLabel()
+
+                    ->unique(ignoreRecord:true)
+                    ->default(
+                        function ()  {
+                            $latestOrder = Facture::latest('id')->first();
+
+                            $orderNumber = 'FACTURE';
+                            $dateComponent = now()->format('Ymd');
+                            $increment = 1;
+
+                            if ($latestOrder) {
+                                $latestOrderDateComponent = substr($latestOrder->orderNumber, 5, 8);
+
+
+                                if ($latestOrderDateComponent === $dateComponent) {
+                                    $increment = (int)substr($latestOrder->orderNumber, -4) + 1;
+                                }
+                            }
+
+                            $orderNumber .= $dateComponent . str_pad($increment, 4, '0', STR_PAD_LEFT);
+
+                            return $orderNumber;
+                        }
+                    ),
+                    Select::make('customer_id')
+                                // ->prefix('Client')
+                                // ->hiddenLabel()
+                                ->required()
+                                ->relationship(name: 'Customer', titleAttribute: 'name')
+                                ->preload()
+                                ->native(false)
+                                ->searchable()
+                                ->optionsLimit(5)
+                                ->live()
+
+                                ->editOptionForm([
+                                    TextInput::make('name')->type('text')->unique(ignoreRecord:true)->required(),
+                                    TextInput::make('address')->type('text'),
+                                    TextInput::make('phone')->type('tel')->unique(ignoreRecord:true),
+                                    TextInput::make('note')->type('text'),
+                                    Select::make('gender')
+                                        ->options(customerGender::class)
+                                        ->native(false),
+                                    Select::make('isActive')
+                                    ->options(isActive::class)
+                                    ->native(false)
+
+                                ])
+                                ->createOptionForm([
+                                    TextInput::make('name')->type('text')->unique(ignoreRecord:true)->required(),
+                                    TextInput::make('address')->type('text'),
+                                    TextInput::make('phone')->type('tel')->unique(ignoreRecord:true),
+                                    TextInput::make('note')->type('text'),
+                                    Select::make('gender')
+                                        ->options(customerGender::class)
+                                        ->native(false),
+                                    Select::make('isActive')
+                                    ->options(isActive::class)
+                                    ->native(false)
+
+                                ])
+                                ,
+
+                    DatePicker::make('factureDate')->label('La date de Facture')->native(false)->default(now()),
+                    Textarea::make('note'),
+
+                ])->columnSpan(2),
+
+
+                Section::make('Details')
+                ->description('Prevent abuse by limiting ')
+                ->schema([
+
+                    TextInput::make('totalHT')->label('TOTAL HT')->numeric()->reactive()->prefix('MAD'),
+                    TextInput::make('tva')->label('TVA')->numeric()->reactive()->prefix('%')->default(20)->maxValue(100),
+                    // TextInput::make('remise')->label('REMISE')->numeric()->reactive()->prefix('%')->maxValue(100)->default(0),
+                    TextInput::make('totalTTC')->label('TOTAL TTC')->numeric()->reactive()->prefix('MAD'),
+                ])->columnSpan(1),
+
+                Section::make('Depense Page')
+                ->description('Cette page pour créer un enregistrement Depense')
+                ->icon('heroicon-o-banknotes')->schema([
+
+                    Repeater::make('factureItems')->relationship()
+                    ->label('Selected Items')
+                    ->schema([
+
+                        Select::make('product_option_id')
+                        ->relationship('productOption', 'option',fn (Builder $query) => $query->where('isFactured',true))
+                        ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
+                        ->preload()
+                        ->native(false)
+                        ->searchable()
+                        ->optionsLimit(5)
+                        ->afterStateUpdated(
+                            function (Forms\Set $set, $state, ?factureItem $record,Get $get): void {
+                                if ($record !== null) {
+                                    return;
+                                }
+
+                                $sku = productOption::whereKey($state)->first();
+
+                                if ($sku === null) {
+                                    return;
+                                }
+
+                                $set('unitPrice', $sku->unitPrice);
+                                $set('quantity', $sku->qteDispo);
+                                $set('qteDisponible', $sku->qteDispo);
+                                self::updateItemTotal($get, $set);
+                            }
+                        )
+                        ->reactive(),
+                        TextInput::make('unitPrice')->numeric()
+                        ->reactive()
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            self::updateItemTotal($get, $set);
+                        }),
+
+                        TextInput::make('qteDisponible')->numeric()->readOnly()
+                        ->disabled(),
+                        TextInput::make('quantity')->numeric()
+                        ->reactive()
+                        ->live(true)
+
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            self::updateItemTotal($get, $set);
+                        }),
+
+                        TextInput::make('totalAmount')->numeric()->columnSpan(2),
+
+                    ])->reorderable(true)
+                    ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
+                        $optionID=$data['product_option_id'];
+                        $orderID = $get('id');
+
+                        $option =  productOption::where('id',$optionID)->first();
+                        $item = factureItem::where(['facture_id'=>$orderID ,'product_option_id'=>$optionID])->first();
+
+                        if($data['quantity']==$item['quantity']){
+                            return $data;
+                        }
+
+                        $quantityDifference  =  $item['quantity'] - $data['quantity'];
+                        // $option->quantity += $quantityDifference;
+
+                        if($option->isFactured) $option->qteDispo += $quantityDifference;
+
+                        $option->save();
+
+                        return $data;
+                    })
+                     ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+
+                            $item =  productOption::where('id',$data['product_option_id'])->first();
+                            $item->qteDispo -= $data['quantity'];
+
+                            $item->save();
+                            return $data;
+
+                    })
+                    /* ->deleteAction(
+                        fn (Action $action) => $action->requiresConfirmation(),
+
+                     ) */
+                     ->columns(3)
+                    ->cloneable()
+
+                    ->reorderableWithButtons()
+
+                ])->columnSpan(2),
+
+
+            ])->columns(3);
+    }
+
+    public static function updateItemTotal(Get $get, Set $set):void{
+        $total = floatval($get('quantity')) * floatval($get('unitPrice'));
+        $set('totalAmount',  number_format($total, 2, '.', ''));
+
+        $TotalItems = floatval(collect($get('../../factureItems'))->pluck('totalAmount')->sum());
+
+        $set('../../totalHT', number_format($TotalItems, 2, '.', ''));
+
+        $tva = $get('../../tva');
+
+        $totalTTC = $TotalItems + ($TotalItems*$tva)/100;
+
+        $set('../../totalTTC', number_format($totalTTC, 2, '.', ''));
+    }
+
+    public static function updateTotals(Get $get, Set $set): void
+    {
+    // Retrieve all selected products and remove empty rows
+    $selectedProducts = collect($get('factureItems'));
+    dd($selectedProducts);
+    // Retrieve prices for all selected products
+     $prices = productOption::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
+    /*
+    // Calculate subtotal based on the selected products and quantities
+    $subtotal = $selectedProducts->reduce(function ($subtotal, $product) use ($prices) {
+        return $subtotal + ($prices[$product['product_id']] * $product['quantity']);
+    }, 0);
+
+    // Update the state with the new values
+    $set('subtotal', number_format($subtotal, 2, '.', ''));
+    $set('total', number_format($subtotal + ($subtotal * ($get('taxes') / 100)), 2, '.', '')); */
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                //
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListFactures::route('/'),
+            'create' => Pages\CreateFacture::route('/create'),
+            'edit' => Pages\EditFacture::route('/{record}/edit'),
+        ];
+    }
+}
