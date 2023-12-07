@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Enums\isActive;
 use App\Filament\Resources\DepenseResource\Pages;
 use App\Filament\Resources\DepenseResource\RelationManagers;
-use App\Models\Depense;
+use App\Models\depense;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
