@@ -192,8 +192,11 @@ table tr td:last-child {
               </td>
               <td >
 
-                Client: <strong>{{ $order->customer->name }}</strong>
+                Client: <br><strong>{{ $order->customer->name }}</strong>
+                <br><strong>{{ $order->customer->address }}</strong>
+                <br><strong>{{ $order->customer->phone }}</strong>
               </td>
+
             {{--   <td rowspan="2" class="client-name">
                  {{ $order->customer->name }}
                 Client: <strong>{{ $order->customer->name }}</strong>

@@ -39,6 +39,7 @@ use Filament\Forms\Set;
 use Filament\Pages\Actions\Modal\Actions\ButtonAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\DB;
 
@@ -322,7 +323,22 @@ class OrderResource extends Resource
 
             ])->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Filter::make('created_at')
+                ->form([
+        DatePicker::make('created_from'),
+        DatePicker::make('created_until')->default(now()),
+                   ])
+            ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                          )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+            })
             ])
             ->actions([
                 // Tables\Actions\ButtonAction::make('asdsa')->url(route('downPDF')),

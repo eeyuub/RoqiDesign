@@ -11,6 +11,7 @@ class invioce extends Controller
 {
     public function downloadPDF($id){
 
+
         // $totalToLetter = SpellNumber::value(1500)->locale('fr')->toLetters();
         // return view('invioce');
 
@@ -19,7 +20,10 @@ class invioce extends Controller
         // dd($order[0]['totalAmount']);
         $totalToLetter = SpellNumber::value($order->totalAmount)->locale('fr')->toLetters();
 
-     $pdf = Pdf::loadView('invioce',compact('totalToLetter','order'));
+     $pdf = Pdf::loadView('invioceOld',compact('totalToLetter','order'));
+
+
+    //  return view('invioce',compact('order','totalToLetter'));
      /* $contxt = stream_context_create([
         'ssl' => [
             'verify_peer' => false,
@@ -29,6 +33,6 @@ class invioce extends Controller
     ]); */
     //   $pdf->setPaper('A4', 'portrait');
     //   $pdf->getDomPDF()->setHttpContext($contxt);
-    return $pdf->stream('invioce.pdf');
+    return $pdf->stream('invioceOld.pdf');
     }
 }

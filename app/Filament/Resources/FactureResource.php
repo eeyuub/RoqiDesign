@@ -24,6 +24,9 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -258,13 +261,48 @@ class FactureResource extends Resource
     {
         return $table
             ->columns([
-                //
-            ])
+                TextColumn::make('numeroFacture'),
+                TextColumn::make('customer.name')->icon('heroicon-o-user'),
+                TextColumn::make('totalTTC')->label('Total')->summarize(Sum::make()->formatStateUsing(function ($state) {
+                    return number_format((float)$state, 2, '.', '') . ' DH';
+                }))
+                ->formatStateUsing(function ($state, facture $facture) {
+                    return number_format((float)$facture->totalTTC, 2, '.', '') . ' DH';
+                }),
+                // Tables\Columns\TextColumn::make('factureStatus')
+                // ->badge(),
+
+                TextColumn::make('factureDate')->icon('heroicon-o-calendar-days'),
+
+            ])->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Filter::make('created_at')
+                ->form([
+        DatePicker::make('created_from'),
+        DatePicker::make('created_until')->default(now()),
+                   ])
+            ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                          )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+            })
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view')
+                ->icon('heroicon-m-printer')
+                ->label('Facture')
+                ->url(fn (facture $record): string => route('downPDF',['id'=> $record->id]), shouldOpenInNewTab: true),
+            Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
+            Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
+            Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),
+            Tables\Actions\RestoreAction::make(),
+            Tables\Actions\ForceDeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

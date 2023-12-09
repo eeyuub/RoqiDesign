@@ -110,6 +110,8 @@ class PurchaseResource extends Resource
 
                                     Select::make('product_option_id')
                                     ->relationship(name: 'productOption', titleAttribute: 'option')
+                                    ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
+
                                     ->preload()
                                     ->native(false)
                                     ->searchable()

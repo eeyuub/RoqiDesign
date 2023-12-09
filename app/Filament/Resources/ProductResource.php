@@ -181,7 +181,7 @@ class ProductResource extends Resource
                         TextInput::make('quantity')->type('number'),
                         TextInput::make('unitPrice')->type('number'),
                         Toggle::make('isFactured')->columnSpan(3)->reactive()->requiredWith('qteDispo'),
-                        TextInput::make('qteDispo')->requiredWith('isFactured')->type('number')->label('quantité Disponible pour facturée')
+                        TextInput::make('qteDispo')->default(0)->requiredWith('isFactured')->type('number')->label('quantité Disponible pour facturée')
                         ->hidden(
                             fn (Get $get): bool => $get('isFactured') == false
                         ),
