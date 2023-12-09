@@ -15,7 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+   return redirect('admin');
 });
 
 Route::get('/invioce/{id}', [invioce::class,'downloadPDF'])->name('downPDF');
