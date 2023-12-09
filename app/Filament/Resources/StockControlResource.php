@@ -105,7 +105,7 @@ class StockControlResource extends Resource
                         TextInput::make('totalAmount')->numeric(),
 
                     ])->reorderable(true)
-                     ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
+                    /*  ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
                         $optionID=$data['product_option_id'];
                         $orderID = $get('id');
 
@@ -128,7 +128,7 @@ class StockControlResource extends Resource
                             $item->quantity -= $data['quantity'];
                             $item->save();
                             return $data;
-                    })
+                    }) */
                     ->deleteAction(
                         fn (Action $action) => $action->requiresConfirmation(),
 
