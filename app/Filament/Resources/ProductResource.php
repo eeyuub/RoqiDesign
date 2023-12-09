@@ -25,6 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Get;
@@ -41,6 +42,7 @@ use Filament\Infolists\Components\Section as infoSection;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\Filter;
 
 class ProductResource extends Resource
 {
@@ -226,9 +228,24 @@ class ProductResource extends Resource
                 TextColumn::make('Supplier.name')->toggleable()->label('Fournisseur')->default('No Content.')->icon('heroicon-o-building-storefront')->searchable(),
                 TextColumn::make('created_at')  ->toggleable()->date()->icon('heroicon-o-calendar-days')->searchable()
 
-            ])
+            ])->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Filter::make('created_at')
+                ->form([
+        DatePicker::make('created_from'),
+        DatePicker::make('created_until')->default(now()),
+                   ])
+            ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                          )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+            })
             ])
             ->actions([
 

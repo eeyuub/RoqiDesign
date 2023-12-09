@@ -9,6 +9,7 @@ use App\Models\stockControl;
 use App\Models\stockControleproduct;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -19,6 +20,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -153,9 +155,24 @@ class StockControlResource extends Resource
                     return strval($count) . ' Item';
                 })->icon('heroicon-o-puzzle-piece'),
 
-            ])
+            ])->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Filter::make('created_at')
+                ->form([
+        DatePicker::make('created_from'),
+        DatePicker::make('created_until')->default(now()),
+                   ])
+            ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                          )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+            })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

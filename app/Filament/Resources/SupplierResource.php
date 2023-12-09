@@ -10,6 +10,7 @@ use App\Filament\Resources\SupplierResource\RelationManagers\ProductsRelationMan
 use App\Models\Supplier;
 use App\Observers\SupplierObserver;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -23,6 +24,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup ;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -75,9 +77,24 @@ class SupplierResource extends Resource
                 IconColumn::make('isActive')
                 ->boolean(),
 
-            ])
+            ])->defaultSort('created_at', 'desc')
             ->filters([
-                //
+                Filter::make('created_at')
+                ->form([
+        DatePicker::make('created_from'),
+        DatePicker::make('created_until')->default(now()),
+                   ])
+            ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                          )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+            })
             ])
             ->actions([
                 Tables\Actions\RestoreAction::make()->hidden(fn($record)=>!$record->trashed()),
