@@ -16,11 +16,11 @@ class StatsAdminOverview extends BaseWidget
     {
         return [
             // Stat::make('Commandes', Order::count()),
-            Stat::make('Total Commandes', number_format((float)Order::sum('totalAmount'), 2, '.', '') . ' DH')
+            Stat::make('Total Commandes', number_format((float)Order::sum('totalAmount'), 2, '.', '') . ' DHs')
             ->description('IN')
             ->descriptionIcon('heroicon-m-arrow-trending-up')
             ->color('success'),
-            Stat::make('Total Achats', number_format((float)Purchase::sum('totalAmount'), 2, '.', '') . ' DH')
+            Stat::make('Total Achats', number_format((float)Purchase::sum('totalAmount'), 2, '.', '') . ' DHs')
             ->description('OUT')
             ->descriptionIcon('heroicon-m-arrow-trending-down')
             ->color('danger'),
