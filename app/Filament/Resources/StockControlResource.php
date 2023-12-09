@@ -150,7 +150,7 @@ class StockControlResource extends Resource
             ->columns([
                 TextColumn::make('code')->label('Stock Number')->icon('heroicon-m-adjustments-horizontal'),
                 TextColumn::make('created_at')->label('Date Export')->date()->icon('heroicon-o-calendar-days'),
-                TextColumn::make('stockControleproducts_exists')->default(function (StockControl $record) {
+                TextColumn::make('stockControleproducts_exists')->label('Total Articles')->default(function (StockControl $record) {
                     $count = StockControleproduct::where('stock_control_id', $record->id)->count();
                     return strval($count) . ' Item';
                 })->icon('heroicon-o-puzzle-piece'),
