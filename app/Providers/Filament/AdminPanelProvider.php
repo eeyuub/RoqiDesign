@@ -41,6 +41,9 @@ class AdminPanelProvider extends PanelProvider
                 FilamentLanguageSwitchPlugin::make()
             ]) */
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->brandName('Roqi Design')
+            ->favicon(asset('img/logo/logodesign.png'))
+            // ->brandLogo(asset('img/logo/logodesign.png'))
             ->widgets([
                 // Widgets\AccountWidget::class,
 
