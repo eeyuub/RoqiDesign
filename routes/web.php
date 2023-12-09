@@ -19,4 +19,5 @@ Route::get('/', function () {
 });
 
 Route::get('/invioce/{id}', [invioce::class,'downloadPDF'])->name('downPDF');
+Route::get('/facture/{id}', [invioce::class,'facturePDF'])->name('facturePDF');
 

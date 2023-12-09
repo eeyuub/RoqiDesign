@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\facture;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -33,6 +34,18 @@ class invioce extends Controller
     ]); */
     //   $pdf->setPaper('A4', 'portrait');
     //   $pdf->getDomPDF()->setHttpContext($contxt);
+    return $pdf->stream('invioceOld.pdf');
+    }
+
+    public function facturePDF($id){
+
+         $order = facture::where('id',$id)->first();
+
+        $totalToLetter = SpellNumber::value($order->totalTTC)->locale('fr')->toLetters();
+
+     $pdf = Pdf::loadView('facture',compact('totalToLetter','order'));
+
+
     return $pdf->stream('invioceOld.pdf');
     }
 }

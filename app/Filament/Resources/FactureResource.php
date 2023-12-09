@@ -297,7 +297,7 @@ class FactureResource extends Resource
                 Tables\Actions\Action::make('view')
                 ->icon('heroicon-m-printer')
                 ->label('Facture')
-                ->url(fn (facture $record): string => route('downPDF',['id'=> $record->id]), shouldOpenInNewTab: true),
+                ->url(fn (facture $record): string => route('facturePDF',['id'=> $record->id]), shouldOpenInNewTab: true),
             Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
             Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
             Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),
