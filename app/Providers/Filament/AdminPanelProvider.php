@@ -59,6 +59,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->passwordReset()
             ->navigationGroups([
                 NavigationGroup::make()
                      ->label('Ventes')

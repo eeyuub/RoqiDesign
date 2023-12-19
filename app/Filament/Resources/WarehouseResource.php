@@ -26,7 +26,7 @@ class WarehouseResource extends Resource
     protected static ?string $model = Warehouse::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
-
+    protected static ?int $navigationSort = 6;
     public static function getModelLabel(): string
     {
         return __('Entrepôts');

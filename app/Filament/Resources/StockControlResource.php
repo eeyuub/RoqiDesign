@@ -30,7 +30,7 @@ class StockControlResource extends Resource
     protected static ?string $model = StockControl::class;
 
     protected static ?string $navigationIcon = 'heroicon-m-adjustments-horizontal';
-
+    protected static ?int $navigationSort = 5;
     public static function form(Form $form): Form
     {
         return $form
