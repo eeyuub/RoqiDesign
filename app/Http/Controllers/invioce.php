@@ -23,17 +23,6 @@ class invioce extends Controller
 
      $pdf = Pdf::loadView('invioceOld',compact('totalToLetter','order'));
 
-
-    //  return view('invioce',compact('order','totalToLetter'));
-     /* $contxt = stream_context_create([
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true,
-        ]
-    ]); */
-    //   $pdf->setPaper('A4', 'portrait');
-    //   $pdf->getDomPDF()->setHttpContext($contxt);
     return $pdf->stream('invioceOld.pdf');
     }
 

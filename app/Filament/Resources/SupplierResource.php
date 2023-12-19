@@ -104,11 +104,11 @@ class SupplierResource extends Resource
 
                      Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())->action(function($record){
 
-                        if($record->Products()->withTrashed()->count() > 0){
+                        if($record->Products()->count() > 0){
                             Notification::make()
                             ->danger()
-                            ->title('Supplier is in use')
-                            ->body('You Cannot delete a supplier related to Product')
+                            ->title('Suppression n’est pas possible')
+                            ->body('Fournissuer est associé à une ou plusieur Achats')
                             ->send();
                             return ;
                         }

@@ -2,13 +2,9 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>A simple, clean, and responsive HTML invoice template</title>
+		<title>{{ $order->customer->name }} - {{ $order->orderNumber }}</title>
 
 		<style>
-		/*
-  Common invoice styles. These styles will work in a browser or using the HTML
-  to PDF anvil endpoint.
-*/
 
 body {
   font-size: 16px;
@@ -188,7 +184,7 @@ table tr td:last-child {
             </tr>
             <tr>
               <td>
-                Facture Date: <strong>May 24th, 2024</strong>
+                Facture Date: <strong>{{ $order->orderDate }}</strong>
               </td>
               <td >
 
@@ -204,7 +200,7 @@ table tr td:last-child {
             </tr>
             <tr>
               <td>
-                Facture No: <strong>12345</strong>
+                Facture No: <strong>{{ $order->orderNumber }}</strong>
               </td>
               <td>
                 {{-- ROQIDESIGN@useanvil.com --}}
@@ -226,10 +222,10 @@ table tr td:last-child {
 
                 @foreach ($order->orderProducts as $item)
                 <tr>
-                    <td>{{ $item->quantity }}</td>
-                    <td>{{ $item->productOption->option }}</td>
-                    <td class="right">{{ $item->unitPrice }}DH</td>
-                    <td class="bold">{{ $item->totalAmount }}DH</td>
+                    <td>{{ $item->quantity }}{{ $item->productOption->productSize->size }}</td>
+                    <td>{{ $item->productOption->option }} ({{ $item->productOption->code }})</td>
+                    <td class="right">{{ number_format($item->unitPrice, 2, '.', ',') }}DH</td>
+                    <td class="bold">{{ number_format($item->totalAmount, 2, '.', ',') }}DH</td>
                   </tr>
                 @endforeach
 

@@ -12,6 +12,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -78,7 +79,22 @@ class WarehouseResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
                 Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
-                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),
+                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
+                ->action(function($record){
+
+                    if($record->productOptions()->count() > 0){
+                        Notification::make()
+                        ->danger()
+                        ->title('Suppression n’est pas possible')
+                        ->body('LEntrepôt est associé à une ou plusieur Produit')
+                        ->send();
+                        return ;
+                    }
+
+                    return $record->delete();
+
+
+             }),
                 Tables\Actions\RestoreAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
             ])
