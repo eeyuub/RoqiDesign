@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Get;
@@ -39,7 +40,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section as infoSection;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\Summarizers\Range;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\Filter;
@@ -216,13 +219,14 @@ class ProductResource extends Resource
                 TextColumn::make('name')->label('Gamme')  ->toggleable()->default('No Content.')->icon('heroicon-o-cube')->searchable(),
                 // TextColumn::make('description')->default('No Content.'),
                 // TextColumn::make('contact')->default('No Content.'),
+
                 TextColumn::make('productOptions')
                     ->label('Options')
                     ->badge()
                     ->translateLabel()
                     ->bulleted()
                     ->toggleable()
-                    ->color('success')
+                    ->color('warning')
                     ->copyable()
                     ->formatStateUsing(function ($state, productOption $option) {
                         return $state->option . ' - ' . $state->code;
@@ -230,7 +234,8 @@ class ProductResource extends Resource
                 TextColumn::make('Supplier.name')->toggleable()->label('Fournisseur')->default('No Content.')->icon('heroicon-o-building-storefront')->searchable(),
                 TextColumn::make('created_at')  ->toggleable()->date()->icon('heroicon-o-calendar-days')->searchable()
 
-            ])->defaultSort('created_at', 'desc')
+            ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('created_at')
                 ->form([
@@ -254,7 +259,26 @@ class ProductResource extends Resource
                 ActionGroup::make([
                  Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
                  Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
-                 Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),
+                 Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
+                 ->action(function($record){
+
+                    foreach ($record->productOptions()->get() as $option) {
+                        if ($option->orderProducts()->exists()) {
+
+                            Notification::make()
+                                ->danger()
+                                ->title('Suppression n’est pas possible')
+                                ->body('Un ou Plusiuer Produit est associe a un ou plusuier Commande')
+                                ->send();
+                            return;
+                        }
+                    }
+
+
+                     return $record->delete();
+
+
+             }),
                  Tables\Actions\RestoreAction::make(),
                 ])->tooltip('Actions'),
             ])
@@ -269,14 +293,13 @@ class ProductResource extends Resource
     }
 
 
-    public static function infolist(Infolist $infolist): Infolist
+    /* public static function infolist(Infolist $infolist): Infolist
         {
             return $infolist
                 ->schema([
 
 
                     infoSection::make('Produit')
-                    // ->description('Prevent abuse by limiting the number of requests per period')
                     ->columns(5)
                     ->schema([
                         ImageEntry::make('attachement')->hiddenLabel()->label('Image')->default('none-1.png')->height(100),
@@ -307,15 +330,12 @@ class ProductResource extends Resource
                             TextEntry::make('Warehouse.name'),
                             TextEntry::make('Motif.motif'),
 
-                            // TextEntry::make('unitPrice')
-                            //     ->formatStateUsing(function ($state, productOption $order) {
-                            //         return number_format((float)$state, 2, '.', '') . ' DH';
-                            //     }),
+
                     ])
 
 
                 ]);
-        }
+        } */
 
 
     public static function getRelations(): array
