@@ -94,11 +94,11 @@ class CustomerResource extends Resource
                 Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
                 ->action(function($record){
 
-                    if(($record->Orders()->count() || $record->facures()->count())  > 0){
+                    if($record->Orders()->exists() || $record->factures()->exists()){
                         Notification::make()
                         ->danger()
                         ->title('Suppression n’est pas possible')
-                        ->body('Le client est associé à une commande')
+                        ->body('Le client est associé à au moins une commande ou une facture. Veuillez annuler ou régler les commandes/factures avant de supprimer le client.')
                         ->send();
                         return ;
                     }
