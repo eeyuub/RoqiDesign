@@ -104,11 +104,11 @@ class SupplierResource extends Resource
 
                      Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())->action(function($record){
 
-                        if($record->Products()->count() > 0){
+                        if($record->Products()->exists()){
                             Notification::make()
                             ->danger()
                             ->title('Suppression n’est pas possible')
-                            ->body('Fournissuer est associé à une ou plusieur Achats')
+                            ->body('Le fournisseur est associé à un ou plusieurs achats. Veuillez supprimer ou dissocier les achats avant de supprimer le fournisseur.')
                             ->send();
                             return ;
                         }
