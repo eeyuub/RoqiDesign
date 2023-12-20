@@ -60,31 +60,35 @@ class PurchaseResource extends Resource
                         ->icon('heroicon-s-user')
                             ->schema([
 
-                                TextInput::make('purchaseNumber')->default(
+                                TextInput::make('purchaseNumber')
+                                ->unique(ignoreRecord:true)
+                                ->default(
                                     function ()  {
                                         $latestOrder = Purchase::latest('id')->first();
 
-                                        $orderNumber = 'PURCHASE';
+                                        $purchaseNumber = 'PURCHASE';
                                         $dateComponent = now()->format('Ymd');
                                         $increment = 1;
 
                                         if ($latestOrder) {
-                                            $latestOrderDateComponent = substr($latestOrder->orderNumber, 5, 8);
+                                            $latestOrderDateComponent = substr($latestOrder->purchaseNumber, 8, 8);
+
 
 
                                             if ($latestOrderDateComponent === $dateComponent) {
-                                                $increment = (int)substr($latestOrder->orderNumber, -4) + 1;
+                                                $increment = (int)substr($latestOrder->purchaseNumber, -4) + 1;
                                             }
                                         }
 
-                                        $orderNumber .= $dateComponent . str_pad($increment, 4, '0', STR_PAD_LEFT);
+                                        $purchaseNumber .= $dateComponent . str_pad($increment, 4, '0', STR_PAD_LEFT);
 
-                                        return $orderNumber;
+                                        return $purchaseNumber;
                                     }
                                 ),
                                 Select::make('supplier_id')
                                 ->relationship(name: 'Supplier', titleAttribute: 'name')
                                 ->preload()
+                                ->required()
                                 ->native(false)
                                 ->searchable()
                                 ->optionsLimit(5)
@@ -112,7 +116,7 @@ class PurchaseResource extends Resource
                                     Select::make('product_option_id')
                                     ->relationship(name: 'productOption', titleAttribute: 'option')
                                     ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
-
+                                    ->columnSpan(2)
                                     ->preload()
                                     ->native(false)
                                     ->searchable()
@@ -134,18 +138,27 @@ class PurchaseResource extends Resource
                                     )
                                     ->reactive(),
 
-                                    TextInput::make('unitPrice')->numeric()
+                                    TextInput::make('unitPrice')->numeric()->columnSpan(2)
                                     ->reactive()
-                                    ->afterStateUpdated(function (Set $set, Get $get) {
-                                        $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')));
+                                    ->live(true)
+                                    ->afterStateUpdated(function (Get $get, Set $set) {
+                                        self::updateItemTotal($get, $set);
                                     }),
-                                    TextInput::make('quantity')->numeric()
+                                    /* ->afterStateUpdated(function (Set $set, Get $get) {
+                                        $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')));
+                                    }) */
+                                    TextInput::make('quantity')->numeric()->columnSpan(2)
                                     ->reactive()
-                                    ->afterStateUpdated(function (Set $set, Get $get) {
+                                    ->live(true)
+                                    ->afterStateUpdated(function (Get $get, Set $set) {
+                                        self::updateItemTotal($get, $set);
+                                    })
+                                    /* ->afterStateUpdated(function (Set $set, Get $get) {
                                         $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')));
-                                    }),
+                                    }) */
+                                    ,
 
-                                    TextInput::make('totalAmount')->numeric(),
+                                    TextInput::make('totalAmount')->numeric()->columnSpan(2)->prefix('MAD'),
 
                                 ])->reorderable(true)
                                 ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
@@ -185,15 +198,15 @@ class PurchaseResource extends Resource
                             ])
 
                     ])
-                                ]),
+                                ])->columnSpan(2),
 
                 Section::make('Details')
                 ->description('Prevent abuse by limiting the number of requests per period')
 
                 ->schema([
                     Textarea::make('note'),
-                    TextInput::make('totalAmount')->numeric()->reactive(),
-                    Placeholder::make('Total Amount')->reactive()
+                    TextInput::make('totalAmount')->numeric()->reactive()->prefix('MAD'),
+                   /*  Placeholder::make('Total Amount')->reactive()
                     ->content(
                         function (Get $get,Set $set)  {
 
@@ -205,12 +218,21 @@ class PurchaseResource extends Resource
                             return 'DH '. $TotalAmount ;
 
                         }
-                    ),
+                    ), */
 
-                ])
+                ])->columnSpan(1)
 
 
-            ]);
+            ])->columns(3);
+    }
+
+    public static function updateItemTotal(Get $get, Set $set):void{
+        $total = floatval($get('quantity')) * floatval($get('unitPrice'));
+        $set('totalAmount',  number_format($total, 2, '.', ''));
+
+        $TotalItems = floatval(collect($get('../../purchaseProducts'))->pluck('totalAmount')->sum());
+
+        $set('../../totalAmount', number_format($TotalItems, 2, '.', ''));
     }
 
     public static function table(Table $table): Table

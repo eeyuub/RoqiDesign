@@ -178,7 +178,7 @@ class OrderResource extends Resource
                                     ->preload()
                                     ->native(false)
                                     ->searchable()
-                                    ->optionsLimit(5)
+                                    ->optionsLimit(5)->columnSpan(2)
                                     ->afterStateUpdated(
                                         function (Forms\Set $set, $state, ?orderProduct $record,Get $get): void {
                                             if ($record !== null) {
@@ -197,21 +197,21 @@ class OrderResource extends Resource
                                         }
                                     )
                                     ->reactive(),
-                                    TextInput::make('unitPrice')->numeric()
+                                    TextInput::make('unitPrice')->numeric()->columnSpan(2)
                                     ->reactive()
+                                    ->live(true)
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         self::updateItemTotal($get, $set);
                                     }),
-                                    TextInput::make('quantity')->numeric()
+                                    TextInput::make('quantity')->numeric()->columnSpan(2)
                                     ->reactive()
                                     ->live(true)
-
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         self::updateItemTotal($get, $set);
                                     })
                                     ,
 
-                                    TextInput::make('totalAmount')->numeric()->columnSpan(3),
+                                    TextInput::make('totalAmount')->numeric()->columnSpan(3)->columnSpan(2)->prefix('MAD'),
 
                                 ])->reorderable(true)
                                 ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
@@ -236,7 +236,7 @@ class OrderResource extends Resource
                                 })
                                  ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
 
-/*   dd($data['product_option_id']);
+                                    /*   dd($data['product_option_id']);
                                         return null; */
                                         $item =  productOption::where('id',$data['product_option_id'])->first();
                                         // dd($item->isFactured);
@@ -253,7 +253,7 @@ class OrderResource extends Resource
                                 ->deleteAction(
                                     fn (Action $action) => $action->requiresConfirmation(),
 
-                                 )->columns(3)
+                                 )->columns(4)
                                 ->cloneable()
 
                                 ->reorderableWithButtons()
