@@ -170,7 +170,7 @@ class FactureResource extends Resource
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::updateItemTotal($get, $set);
                         }),
-                        TextInput::make('designation'),
+                        TextInput::make('designation')->required(),
 
                         TextInput::make('qteDisponible')->numeric()->readOnly()
                         ->disabled(),
