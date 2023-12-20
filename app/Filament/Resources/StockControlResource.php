@@ -25,6 +25,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use function Laravel\Prompts\text;
+
 class StockControlResource extends Resource
 {
     protected static ?string $model = StockControl::class;
@@ -59,6 +61,7 @@ class StockControlResource extends Resource
                         return $orderNumber;
                     }
                 )->readOnly(),
+                TextInput::make('note')->prefix('note')->hiddenLabel(),
                 Section::make('Stock Controle Items')
                 ->description('add any item has been exported')
                 ->icon('heroicon-m-adjustments-horizontal')
@@ -149,6 +152,7 @@ class StockControlResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('code')->label('Stock Number')->icon('heroicon-m-adjustments-horizontal'),
+                TextColumn::make('note')->label('note')->icon('heroicon-o-document-text'),
                 TextColumn::make('created_at')->label('Date Export')->date()->icon('heroicon-o-calendar-days'),
                 TextColumn::make('stockControleproducts_exists')->label('Total Articles')->default(function (StockControl $record) {
                     $count = StockControleproduct::where('stock_control_id', $record->id)->count();
@@ -176,6 +180,8 @@ class StockControlResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

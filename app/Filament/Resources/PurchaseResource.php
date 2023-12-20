@@ -44,7 +44,7 @@ class PurchaseResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Commande de Produit');
+        return __('Achat de Produit');
     }
 
     public static function form(Form $form): Form
@@ -217,11 +217,16 @@ class PurchaseResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('purchaseNumber'),
-                TextColumn::make('Supplier.name'),
-                TextColumn::make('totalAmount')->summarize(Sum::make())->money(),
-                TextColumn::make('purchaseStatus')->badge(),
-                TextColumn::make('purchaseDate')->date(),
+                TextColumn::make('purchaseNumber')->label("Numero d'Achat"),
+                TextColumn::make('Supplier.name')->label('Fournisseur')->icon('heroicon-o-building-storefront'),
+                TextColumn::make('totalAmount')->icon('heroicon-o-banknotes')->summarize(Sum::make()->formatStateUsing(function ($state) {
+                    return number_format((float)$state, 2, '.', '') . ' DH';
+                }))
+                ->formatStateUsing(function ($state, Purchase $order) {
+                    return number_format((float)$order->totalAmount, 2, '.', '') . ' DH';
+                }),
+                TextColumn::make('purchaseStatus')->badge()->label('Achat Status'),
+                TextColumn::make('purchaseDate')->label("Date d'Achat")->date()->icon('heroicon-o-calendar-days'),
             ])->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('created_at')

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Askedio\SoftCascade\Traits\SoftCascadeTrait;
+use Dyrynda\Database\Support\CascadeSoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +17,10 @@ class Product extends Model implements HasMedia
     use HasFactory;
     use SoftDeletes;
     use InteractsWithMedia;
+
+    use SoftCascadeTrait;
+    protected $softCascade = ['productOptions'];
+
 
     public function Category(): BelongsTo
     {

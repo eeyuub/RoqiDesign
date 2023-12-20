@@ -45,9 +45,10 @@ class ProductOptionRelationManager extends RelationManager
                 // Tables\Actions\AttachAction::make(),
             ])
             ->actions([
-                //  Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DetachAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\ViewAction::make(),
+                // Tables\Actions\DeleteAction::make(),
 
             ])
             ->bulkActions([

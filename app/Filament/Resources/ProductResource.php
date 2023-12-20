@@ -256,31 +256,29 @@ class ProductResource extends Resource
             ])
             ->actions([
 
-                ActionGroup::make([
-                 Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
-                 Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
-                 Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
-                 ->action(function($record){
+                Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
+                Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
+                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
+                ->action(function($record){
 
-                    foreach ($record->productOptions()->get() as $option) {
-                        if ($option->orderProducts()->exists() || $option->factureItems()->exists()) {
+                   foreach ($record->productOptions()->get() as $option) {
+                       if ($option->orderProducts()->exists() || $option->factureItems()->exists()) {
 
-                            Notification::make()
-                                ->danger()
-                                ->title('Suppression n’est pas possible')
-                                ->body('Un ou Plusiuer Produit est associe a un ou plusuier Commande ou Facture')
-                                ->send();
-                            return;
-                        }
-                    }
-
-
-                     return $record->delete();
+                           Notification::make()
+                               ->danger()
+                               ->title('Suppression n’est pas possible')
+                               ->body('Un ou Plusiuer Produit est associe a un ou plusuier Commande ou Facture')
+                               ->send();
+                           return;
+                       }
+                   }
 
 
-             }),
-                 Tables\Actions\RestoreAction::make(),
-                ])->tooltip('Actions'),
+                    return $record->delete();
+
+
+            }),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

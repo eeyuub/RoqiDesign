@@ -169,7 +169,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class
+        Barryvdh\DomPDF\ServiceProvider::class,
+        Askedio\SoftCascade\Providers\GenericServiceProvider::class,
+        Askedio\SoftCascade\Providers\LumenServiceProvider::class,
+
     ])->toArray(),
 
     /*

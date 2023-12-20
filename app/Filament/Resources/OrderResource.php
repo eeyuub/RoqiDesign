@@ -310,7 +310,7 @@ class OrderResource extends Resource
             ->columns([
                 TextColumn::make('orderNumber'),
                 TextColumn::make('customer.name')->icon('heroicon-o-user'),
-                TextColumn::make('totalAmount')->summarize(Sum::make()->formatStateUsing(function ($state) {
+                TextColumn::make('totalAmount')->icon('heroicon-o-banknotes')->summarize(Sum::make()->formatStateUsing(function ($state) {
                     return number_format((float)$state, 2, '.', '') . ' DH';
                 }))
                 ->formatStateUsing(function ($state, Order $order) {
