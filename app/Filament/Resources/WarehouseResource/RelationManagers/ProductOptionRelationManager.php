@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\ViewColumn;
+use Filament\Tables\Grouping\Group;
 
 class ProductOptionRelationManager extends RelationManager
 {
@@ -29,13 +30,21 @@ class ProductOptionRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
+            ->groups([
+                Group::make('Product.name')->collapsible()
+                    ->getDescriptionFromRecordUsing(fn (productOption $record): string => $record->Product->name),
+            ])
             ->columns([
-                Tables\Columns\TextColumn::make('Product.name'),
-                Tables\Columns\TextColumn::make('option'),
-                Tables\Columns\TextColumn::make('quantity'  )
+                // Tables\Columns\TextColumn::make('Product.name'),
+                Tables\Columns\TextColumn::make('code')
+                ->formatStateUsing(function ($state, productOption $productOption) {
+                    return $productOption->option . ' (' . $productOption->code.')';
+                }),
+                Tables\Columns\TextColumn::make('quantity')
                 ->formatStateUsing(function ($state, productOption $productOption) {
                     return $productOption->quantity . ' ' . $productOption->productSize->size;
                 }),
+
             ])
             ->filters([
                 //

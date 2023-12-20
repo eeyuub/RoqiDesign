@@ -82,11 +82,11 @@ class WarehouseResource extends Resource
                 Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
                 ->action(function($record){
 
-                    if($record->productOptions()->count() > 0){
+                    if($record->productOptions()->exists()){
                         Notification::make()
                         ->danger()
                         ->title('Suppression n’est pas possible')
-                        ->body('LEntrepôt est associé à une ou plusieur Produit')
+                        ->body('L\'entrepôt est associé à un ou plusieurs produits. Veuillez dissocier les produits avant de supprimer l\'entrepôt.')
                         ->send();
                         return ;
                     }
