@@ -41,6 +41,11 @@ class productOption extends Model implements HasMedia
         return $this->hasMany(orderProduct::class);
     }
 
+    public function factureItems(): HasMany
+    {
+        return $this->hasMany(factureItem::class);
+    }
+
     public function stockControls(): HasMany
     {
         return $this->hasMany(stockControl::class);

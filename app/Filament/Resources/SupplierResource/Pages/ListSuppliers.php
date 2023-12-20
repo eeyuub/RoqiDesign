@@ -15,14 +15,14 @@ class ListSuppliers extends ListRecords
 
     public function getTabs():array {
         return[
-            'all' => Tab::make('All'),
-            'activeSuppliers' => Tab::make('Active')->modifyQueryUsing(function($query){
+            'all' => Tab::make('Toutes'),
+            'activeCustomer' => Tab::make('Active')->modifyQueryUsing(function($query){
                 return $query->where('isActive',true);
             }),
-            'inactiveSuppliers' => Tab::make('Inactive')->modifyQueryUsing(function($query){
+            'inactiveCustomer' => Tab::make('Inactive')->modifyQueryUsing(function($query){
                 return $query->where('isActive',false);
             }),
-            'archivedSuppliers' => Tab::make('Archived')->modifyQueryUsing(function($query){
+            'archivedCustomer' => Tab::make('Archivé')->modifyQueryUsing(function($query){
                 return $query->onlyTrashed();
             })
         ];

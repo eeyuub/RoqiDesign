@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('unitPrice',8,2)->nullable();
             $table->float('totalAmount',8,2)->nullable();
             $table->string('note')->nullable();
+            $table->string('designation')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

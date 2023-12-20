@@ -227,7 +227,7 @@ table tr td:last-child {
                 @foreach ($order->factureItems as $item)
                 <tr>
                     <td>{{ $item->quantity }}{{ $item->productOption->productSize->size }}</td>
-                    <td>{{ $item->productOption->option }} ({{ $item->productOption->code }})</td>
+                    <td>{{ $item->designation }}</td>
                     <td class="right">{{ number_format($item->unitPrice, 2, '.', ',') }}DH</td>
                     <td class="bold">{{ number_format($item->totalAmount, 2, '.', ',') }}DH</td>
                   </tr>
@@ -262,14 +262,21 @@ table tr td:last-child {
                 <td></td>
                 <td></td>
                    {{-- <td></td> --}}
+                   <td class="right"> TOTAL HT</td>
+                   <td class="bold">{{ number_format($order->totalHT, 2, '.', ',')}}DH</td>
+                </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                   {{-- <td></td> --}}
                    <td class="right"> TAX(20%)</td>
                    <td class="bold">{{ number_format(($order->totalHT*$order->tva)/100, 2, '.', ',')}}DH</td>
-                 </tr>
+                </tr>
               <tr>
              <td></td>
              <td></td>
                 {{-- <td></td> --}}
-                <td class="right"> TOTAL TC</td>
+                <td class="right"> TOTAL TTC</td>
                 <td class="bold">{{ number_format($order->totalTTC, 2, '.', ',') }}DH</td>
               </tr>
             </tbody>

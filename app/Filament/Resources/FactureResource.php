@@ -37,13 +37,16 @@ class FactureResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?int $navigationSort = 4;
+
+    public get $get;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Depense Page')
-                ->description('Cette page pour créer un enregistrement Depense')
-                ->icon('heroicon-o-banknotes')->schema([
+                Section::make('Facture Deatils')
+                ->description('Cette page pour créer un enregistrement Facture')
+                ->icon('heroicon-o-clipboard-document-list')->schema([
                     TextInput::make('numeroFacture')
                     ->label('N* Facture')
                     // ->prefix('N* Facture')
@@ -117,8 +120,9 @@ class FactureResource extends Resource
                 ])->columnSpan(2),
 
 
-                Section::make('Details')
-                ->description('Prevent abuse by limiting ')
+                Section::make('Calcule de facture')
+                ->description('Deatils des calcule')
+                ->icon('heroicon-o-banknotes')
                 ->schema([
 
                     TextInput::make('totalHT')->label('TOTAL HT')->numeric()->reactive()->prefix('MAD'),
@@ -127,16 +131,16 @@ class FactureResource extends Resource
                     TextInput::make('totalTTC')->label('TOTAL TTC')->numeric()->reactive()->prefix('MAD'),
                 ])->columnSpan(1),
 
-                Section::make('Depense Page')
-                ->description('Cette page pour créer un enregistrement Depense')
-                ->icon('heroicon-o-banknotes')->schema([
+                Section::make('Facture Produit')
+                ->description('Les produit relier a ce Facture')
+                ->icon('heroicon-o-cube')->schema([
 
                     Repeater::make('factureItems')->relationship()
                     ->label('Selected Items')
                     ->schema([
 
                         Select::make('product_option_id')
-                        ->relationship('productOption', 'option',fn (Builder $query) => $query->where('isFactured',true))
+                        ->relationship('productOption', 'option',fn (Builder $query) => $query->where('isFactured',true)->where('qteDispo','>',0))
                         ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
                         ->preload()
                         ->native(false)
@@ -166,10 +170,13 @@ class FactureResource extends Resource
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::updateItemTotal($get, $set);
                         }),
+                        TextInput::make('designation'),
 
                         TextInput::make('qteDisponible')->numeric()->readOnly()
                         ->disabled(),
-                        TextInput::make('quantity')->numeric()
+                        TextInput::make('quantity')->numeric()->default(1)->minValue(1)->maxValue(function(get $get){
+                            return $get('qteDisponible');
+                        })
                         ->reactive()
                         ->live(true)
 
@@ -177,7 +184,7 @@ class FactureResource extends Resource
                             self::updateItemTotal($get, $set);
                         }),
 
-                        TextInput::make('totalAmount')->numeric()->columnSpan(2),
+                        TextInput::make('totalAmount')->numeric()->columnSpan(1),
 
                     ])->reorderable(true)
                     ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
@@ -209,10 +216,6 @@ class FactureResource extends Resource
                             return $data;
 
                     })
-                    /* ->deleteAction(
-                        fn (Action $action) => $action->requiresConfirmation(),
-
-                     ) */
                      ->columns(3)
                     ->cloneable()
 
@@ -238,6 +241,8 @@ class FactureResource extends Resource
 
         $set('../../totalTTC', number_format($totalTTC, 2, '.', ''));
     }
+
+
 
     public static function updateTotals(Get $get, Set $set): void
     {
@@ -296,8 +301,8 @@ class FactureResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('view')
                 ->icon('heroicon-m-printer')
-                ->label('Facture')
-                ->url(fn (facture $record): string => route('facturePDF',['id'=> $record->id]), shouldOpenInNewTab: true),
+                ->label('Facture')->hidden(fn($record)=>$record->trashed())
+                ->url(fn (facture $record): string => route('facturePDF',['id'=> $record->numeroFacture]), shouldOpenInNewTab: true),
             Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
             Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
             Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),

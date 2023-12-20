@@ -263,12 +263,12 @@ class ProductResource extends Resource
                  ->action(function($record){
 
                     foreach ($record->productOptions()->get() as $option) {
-                        if ($option->orderProducts()->exists()) {
+                        if ($option->orderProducts()->exists() || $option->factureItems()->exists()) {
 
                             Notification::make()
                                 ->danger()
                                 ->title('Suppression n’est pas possible')
-                                ->body('Un ou Plusiuer Produit est associe a un ou plusuier Commande')
+                                ->body('Un ou Plusiuer Produit est associe a un ou plusuier Commande ou Facture')
                                 ->send();
                             return;
                         }
@@ -293,7 +293,7 @@ class ProductResource extends Resource
     }
 
 
-    /* public static function infolist(Infolist $infolist): Infolist
+     public static function infolist(Infolist $infolist): Infolist
         {
             return $infolist
                 ->schema([
@@ -302,12 +302,13 @@ class ProductResource extends Resource
                     infoSection::make('Produit')
                     ->columns(5)
                     ->schema([
-                        ImageEntry::make('attachement')->hiddenLabel()->label('Image')->default('none-1.png')->height(100),
+                        ImageEntry::make('attachement')->columnSpan(1)->hiddenLabel()->label('Image')->default('none-1.png')->height(60),
 
-                        TextEntry::make('name')->label('La Gamme')->size(TextEntrySize::Large)->icon('heroicon-o-shopping-cart'),
-                        TextEntry::make('Category.name')->label('Catégorie')->size(TextEntrySize::Large)->icon('heroicon-o-tag'),
-                        TextEntry::make('Supplier.name')->label('Fournisseur')->size(TextEntrySize::Large)->icon('heroicon-o-building-storefront'),
-                        TextEntry::make('note')->size(TextEntrySize::Large)->icon('heroicon-o-document-text'),
+                        TextEntry::make('name')->columnSpan(1)->label('La Gamme')->size(TextEntrySize::Large)->icon('heroicon-o-shopping-cart'),
+                        TextEntry::make('Category.name')->columnSpan(1)->label('Catégorie')->size(TextEntrySize::Large)->icon('heroicon-o-tag'),
+
+                        TextEntry::make('Supplier.name')->columnSpan(1)->label('Fournisseur')->size(TextEntrySize::Large)->icon('heroicon-o-building-storefront'),
+                        TextEntry::make('note')->columnSpan(1)->size(TextEntrySize::Large)->icon('heroicon-o-document-text'),
                     ]),
 
                     RepeatableEntry::make('productOptions')
@@ -335,7 +336,7 @@ class ProductResource extends Resource
 
 
                 ]);
-        } */
+        }
 
 
     public static function getRelations(): array

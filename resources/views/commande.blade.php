@@ -254,11 +254,12 @@ table tr td:last-child {
                 <td class="right"> TVA 20%</td>
                 <td class="bold">300.00DH</td>
               </tr> --}}
+
               <tr>
              <td></td>
              <td></td>
                 {{-- <td></td> --}}
-                <td class="right"> TOTAL INC</td>
+                <td class="right"> TOTAL TTC</td>
                 <td class="bold">{{ number_format($order->totalAmount, 2, '.', ',') }}DH</td>
               </tr>
             </tbody>

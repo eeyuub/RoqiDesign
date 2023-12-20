@@ -94,7 +94,7 @@ class CustomerResource extends Resource
                 Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())
                 ->action(function($record){
 
-                    if($record->Orders()->count() > 0){
+                    if(($record->Orders()->count() || $record->facures()->count())  > 0){
                         Notification::make()
                         ->danger()
                         ->title('Suppression n’est pas possible')

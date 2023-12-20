@@ -13,8 +13,8 @@ class ListPurchases extends ListRecords
 
     public function getTabs():array {
         return[
-            'all' => Tab::make('All'),
-            'archived' => Tab::make('Archived')->modifyQueryUsing(function($query){
+            'all' => Tab::make('Toutes '),
+            'archived' => Tab::make('Archivé')->modifyQueryUsing(function($query){
                 return $query->onlyTrashed();
             })
         ];
