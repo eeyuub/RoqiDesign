@@ -69,7 +69,7 @@ class OrderResource extends Resource
         return $form
             ->schema([
 
-                Section::make('Créer une commande')
+                Section::make('Créer une Vente')
                 ->description('Cette page pour créer un  commande')
                 ->icon('heroicon-o-shopping-bag')->schema([
                     Wizard::make([
@@ -265,8 +265,9 @@ class OrderResource extends Resource
                     ])
                                 ])->columnSpan(2),
 
-                Section::make('Details')
-                ->description('Prevent abuse by limiting the number of requests per period')
+                Section::make('Calcule de Commande de Ventes')
+                ->description('Deatils des calcule')
+                ->icon('heroicon-o-banknotes')
 
                 ->schema([
                     Textarea::make('note'),

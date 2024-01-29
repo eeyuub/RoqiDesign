@@ -21,6 +21,11 @@ class facture extends Model
         return $this->hasMany(factureItem::class);
     }
 
+    public function factureExtends(): HasMany
+    {
+        return $this->hasMany(factureExtend::class);
+    }
+
     public function Customer(): BelongsTo
     {
         return $this->BelongsTo(Customer::class);

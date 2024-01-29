@@ -233,6 +233,15 @@ table tr td:last-child {
                   </tr>
                 @endforeach
 
+                @foreach ($order->factureExtends as $item)
+                <tr>
+                    <td>{{ $item->quantity }}{{ $item->productSize }}</td>
+                    <td>{{ $item->designation }}</td>
+                    <td class="right">{{ number_format($item->unitPrice, 2, '.', ',') }}DH</td>
+                    <td class="bold">{{ number_format($item->totalAmount, 2, '.', ',') }}DH</td>
+                  </tr>
+                @endforeach
+
             </tbody>
           </table>
 

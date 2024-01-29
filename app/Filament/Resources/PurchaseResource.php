@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\isActive;
 use App\Enums\payment;
 use App\Enums\status;
 use App\Filament\Resources\PurchaseResource\Pages;
@@ -52,12 +53,12 @@ class PurchaseResource extends Resource
         return $form
             ->schema([
 
-                Section::make('Create an Order')
-                ->description('This page for creating an Order record')
+                Section::make('Créer une Achat')
+                ->description("Cette page pour créer un  commande d'Achat")
                 ->icon('heroicon-s-cube')->schema([
                     Wizard::make([
                         Step::make('Customer')
-                        ->icon('heroicon-s-user')
+                        ->icon('heroicon-o-building-storefront')
                             ->schema([
 
                                 TextInput::make('purchaseNumber')
@@ -92,7 +93,29 @@ class PurchaseResource extends Resource
                                 ->native(false)
                                 ->searchable()
                                 ->optionsLimit(5)
-                                ->live(),
+                                ->live()
+                                ->editOptionForm([
+                                    TextInput::make('name')->type('text')->required(),
+                                    TextInput::make('address')->type('text'),
+                                    TextInput::make('phone')->type('tel'),
+                                    TextInput::make('contactPerson')->type('text'),
+                                    TextInput::make('city')->type('text'),
+                                    TextInput::make('note')->type('text'),
+                                    Select::make('isActive')
+                                    ->options(isActive::class)
+                                    ->native(false)
+                                 ])
+                                ->createOptionForm([
+                                    TextInput::make('name')->type('text')->required(),
+                                    TextInput::make('address')->type('text'),
+                                    TextInput::make('phone')->type('tel'),
+                                    TextInput::make('contactPerson')->type('text'),
+                                    TextInput::make('city')->type('text'),
+                                    TextInput::make('note')->type('text'),
+                                    Select::make('isActive')
+                                    ->options(isActive::class)
+                                    ->native(false)
+                                ]),
                                 select::make('purchasePayment')
                                 ->options(payment::class)
                                 ->native(false),
@@ -200,8 +223,9 @@ class PurchaseResource extends Resource
                     ])
                                 ])->columnSpan(2),
 
-                Section::make('Details')
-                ->description('Prevent abuse by limiting the number of requests per period')
+                Section::make('Calcule de Commande dAchat')
+                ->description('Deatils des calcule')
+                ->icon('heroicon-o-banknotes')
 
                 ->schema([
                     Textarea::make('note'),

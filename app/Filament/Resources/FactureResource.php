@@ -224,6 +224,47 @@ class FactureResource extends Resource
                 ])->columnSpan(2),
 
 
+
+
+
+                Section::make('Étendu Produit')
+                ->description('Les produit relier a ce Facture et n\'est pas enregistré en stock')
+                ->icon('heroicon-o-cube')->schema([
+
+                    Repeater::make('factureExtends')->relationship()
+                    ->label('Selected Items')
+                    ->schema([
+
+                        TextInput::make('designation')->required(),
+
+                        TextInput::make('unitPrice')->numeric()
+                        ->reactive()
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            self::updateItemTotal($get, $set);
+                        }),
+
+                        TextInput::make('quantity')->numeric()->default(1)->minValue(1)
+                        ->reactive()
+                        ->live(true)
+
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            self::updateItemTotal($get, $set);
+                        }),
+
+
+
+                        TextInput::make('productSize')->required(),
+                        TextInput::make('totalAmount')->numeric()->columnSpan(2),
+
+                    ])->reorderable(true)
+                     ->columns(3)
+                    ->cloneable()
+
+                    ->reorderableWithButtons()
+
+                ])->columnSpan(2),
+
+
             ])->columns(3);
     }
 
@@ -232,8 +273,10 @@ class FactureResource extends Resource
         $set('totalAmount',  number_format($total, 2, '.', ''));
 
         $TotalItems = floatval(collect($get('../../factureItems'))->pluck('totalAmount')->sum());
+        $TotalItemsExtends = floatval(collect($get('../../factureExtends'))->pluck('totalAmount')->sum());
 
-        $set('../../totalHT', number_format($TotalItems, 2, '.', ''));
+
+        $set('../../totalHT', number_format(($TotalItems +$TotalItemsExtends), 2, '.', ''));
 
         $tva = $get('../../tva');
 
