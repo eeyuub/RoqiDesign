@@ -216,8 +216,9 @@ table tr td:last-child {
           <table class="line-items-container" style="margin-bottom: 0px;">
             <thead>
               <tr>
-                <th class="heading-quantity">Qty</th>
+
                 <th class="heading-description">Designation</th>
+                <th class="heading-quantity">Qty</th>
                 <th class="heading-price">Prix</th>
                 <th class="heading-subtotal">Soustotal</th>
               </tr>
@@ -226,8 +227,14 @@ table tr td:last-child {
 
                 @foreach ($order->factureItems as $item)
                 <tr>
-                    <td>{{ $item->quantity }}{{ $item->productOption->productSize->size }}</td>
+                    @if (!empty($item->designation))
                     <td>{{ $item->designation }}</td>
+                    @else
+                    <td>{{ $item->productOption->option }}</td>
+                    @endif
+
+                    <td>{{ $item->quantity }}{{ $item->productOption->productSize->size }}</td>
+
                     <td class="right">{{ number_format($item->unitPrice, 2, '.', ',') }}DH</td>
                     <td class="bold">{{ number_format($item->totalAmount, 2, '.', ',') }}DH</td>
                   </tr>
@@ -235,8 +242,9 @@ table tr td:last-child {
 
                 @foreach ($order->factureExtends as $item)
                 <tr>
-                    <td>{{ $item->quantity }}{{ $item->productSize }}</td>
+
                     <td>{{ $item->designation }}</td>
+                    <td>{{ $item->quantity }}{{ $item->productSize }}</td>
                     <td class="right">{{ number_format($item->unitPrice, 2, '.', ',') }}DH</td>
                     <td class="bold">{{ number_format($item->totalAmount, 2, '.', ',') }}DH</td>
                   </tr>

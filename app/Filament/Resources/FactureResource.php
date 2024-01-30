@@ -55,18 +55,18 @@ class FactureResource extends Resource
                     ->unique(ignoreRecord:true)
                     ->default(
                         function ()  {
-                            $latestOrder = Facture::latest('id')->first();
+                            $latestOrder = facture::latest('id')->first();
 
                             $orderNumber = 'FACTURE';
                             $dateComponent = now()->format('Ymd');
                             $increment = 1;
 
                             if ($latestOrder) {
-                                $latestOrderDateComponent = substr($latestOrder->orderNumber, 5, 8);
+                                $latestOrderDateComponent = substr($latestOrder->numeroFacture, 7, 8);
 
 
                                 if ($latestOrderDateComponent === $dateComponent) {
-                                    $increment = (int)substr($latestOrder->orderNumber, -4) + 1;
+                                    $increment = (int)substr($latestOrder->numeroFacture, -4) + 1;
                                 }
                             }
 
@@ -135,8 +135,11 @@ class FactureResource extends Resource
                 ->description('Les produit relier a ce Facture')
                 ->icon('heroicon-o-cube')->schema([
 
-                    Repeater::make('factureItems')->relationship()
+                    Repeater::make('factureItems')
+                    ->relationship()
+
                     ->label('Selected Items')
+
                     ->schema([
 
                         Select::make('product_option_id')
@@ -170,7 +173,7 @@ class FactureResource extends Resource
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::updateItemTotal($get, $set);
                         }),
-                        TextInput::make('designation')->required(),
+                        TextInput::make('designation'),
 
                         TextInput::make('qteDisponible')->numeric()->readOnly()
                         ->disabled(),
@@ -186,9 +189,15 @@ class FactureResource extends Resource
 
                         TextInput::make('totalAmount')->numeric()->columnSpan(1),
 
-                    ])->reorderable(true)
+                    ])
+                    ->deleteAction(function (Get $get, Set $set) {
+                        self::updateItemTotal($get, $set);
+                    })
+                    ->reorderable(true)
                     ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
+
                         $optionID=$data['product_option_id'];
+
                         $orderID = $get('id');
 
                         $option =  productOption::where('id',$optionID)->first();
@@ -210,6 +219,7 @@ class FactureResource extends Resource
                      ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
 
                             $item =  productOption::where('id',$data['product_option_id'])->first();
+
                             $item->qteDispo -= $data['quantity'];
 
                             $item->save();
@@ -276,11 +286,11 @@ class FactureResource extends Resource
         $TotalItemsExtends = floatval(collect($get('../../factureExtends'))->pluck('totalAmount')->sum());
 
 
-        $set('../../totalHT', number_format(($TotalItems +$TotalItemsExtends), 2, '.', ''));
+       $totalFacture=  $set('../../totalHT', number_format(($TotalItems + $TotalItemsExtends), 2, '.', ''));
 
         $tva = $get('../../tva');
 
-        $totalTTC = $TotalItems + ($TotalItems*$tva)/100;
+        $totalTTC = $totalFacture + ($totalFacture*$tva)/100;
 
         $set('../../totalTTC', number_format($totalTTC, 2, '.', ''));
     }
