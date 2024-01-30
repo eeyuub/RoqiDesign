@@ -206,7 +206,7 @@ body{
                     <div class = "invoice-head">
                         <div class = "invoice-head-top">
                             <div class = "invoice-head-top-left text-start">
-                                <img   src="https://studiofitness.wiicode.tech/img/background/logo.png">
+                                <img   src="https://roqidesign.salty-wave.com/img/logo/logo.png">
                             </div>
                             <div class = "invoice-head-top-right text-end">
                                 <h3>Facture</h3>

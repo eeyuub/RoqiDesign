@@ -165,8 +165,7 @@ table tr td:last-child {
           <div class="logo-container">
             <img
               style="height: 100px"
-              src="https://studiofitness.wiicode.tech/img/background/logo.png"
-            >
+              src="https://roqidesign.salty-wave.com/img/logo/logo.png">
           </div>
 
           <table class="invoice-info-container">
