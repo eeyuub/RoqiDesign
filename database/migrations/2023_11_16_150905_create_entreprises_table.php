@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('tel')->nullable();
             $table->string('ICE')->nullable();
             $table->string('RC')->nullable();
-            $table->string('emal')->nullable();
+            $table->string('email')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

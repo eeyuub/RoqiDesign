@@ -165,7 +165,7 @@ table tr td:last-child {
           <div class="logo-container">
             <img
               style="height: 100px"
-              src="https://roqidesign.salty-wave.com/img/logo/logo.png">
+              src="https://salty-wave.com/assets/img/logo/roqidesign.png">
           </div>
 
           <table class="invoice-info-container">
@@ -188,11 +188,14 @@ table tr td:last-child {
             <tr>
               <td>
                 Facture Date: <strong>{{ $order->factureDate }}</strong>
+                Facture Date: <strong>{{ $order->factureDate }}</strong>
               </td>
               <td >
 
                 Client: <br><strong>{{ $order->customer->name }}</strong>
                 <br><strong>{{ $order->customer->address }}</strong>
+                <br><strong>{{ $order->customer->phone }}</strong>
+                <br><strong>{{ $order->customer->phone }}</strong>
                 <br><strong>{{ $order->customer->phone }}</strong>
               </td>
 

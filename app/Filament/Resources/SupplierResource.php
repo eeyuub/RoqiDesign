@@ -59,7 +59,13 @@ class SupplierResource extends Resource
                     Select::make('isActive')
                     ->options(isActive::class)
                     ->native(false)
-                ])->columns(2)
+                ])->columns(2),
+                Section::make('Coordonnées de la société/Fournisseur')
+                ->icon('heroicon-o-hashtag')->schema([
+                    TextInput::make('fix')->type('text'),
+                    TextInput::make('ICE')->type('text')->label('ICE'),
+                    TextInput::make('RC')->type('text')->label('RC'),
+                ])->columns(3)
             ]);
     }
 

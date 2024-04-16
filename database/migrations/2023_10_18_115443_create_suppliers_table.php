@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('city')->nullable();
             $table->string('note')->nullable();
+            $table->string('fix')->nullable();
+            $table->string('tel')->nullable();
+            $table->string('ICE')->nullable();
+            $table->string('RC')->nullable();
             $table->boolean('isActive')->default(1)->nullable();
             $table->softDeletes();
             $table->timestamps();

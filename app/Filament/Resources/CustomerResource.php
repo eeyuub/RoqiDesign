@@ -48,13 +48,23 @@ class CustomerResource extends Resource
                     TextInput::make('address')->type('text'),
                     TextInput::make('phone')->type('tel')->unique(ignoreRecord:true),
                     TextInput::make('note')->type('text'),
+
+
+
+
                     Select::make('gender')
                         ->options(customerGender::class)
                         ->native(false),
                     Select::make('isActive')
                     ->options(isActive::class)
                     ->native(false)
-                ])->columns(2)
+                ])->columns(2),
+                Section::make('Coordonnées de la société/Client')
+                    ->icon('heroicon-o-hashtag')->schema([
+                        TextInput::make('fix')->type('text'),
+                        TextInput::make('ICE')->type('text')->label('ICE'),
+                        TextInput::make('RC')->type('text')->label('RC'),
+                    ])->columns(3)
 
             ]);
     }

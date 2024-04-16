@@ -6,7 +6,6 @@
         <title>{{ $order->customer->name }} - {{ $order->orderNumber }}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <style>
 *,
 *::after,
@@ -206,7 +205,7 @@ body{
                     <div class = "invoice-head">
                         <div class = "invoice-head-top">
                             <div class = "invoice-head-top-left text-start">
-                                <img   src="https://roqidesign.salty-wave.com/img/logo/logo.png">
+                                <img src="https://salty-wave.com/assets/img/logo/roqidesign.png">
                             </div>
                             <div class = "invoice-head-top-right text-end">
                                 <h3>Facture</h3>
@@ -229,8 +228,6 @@ body{
                                     <li>{{ $order->customer->name }}</li>
                                     <li>{{ $order->customer->address }}</li>
                                     <li>{{ $order->customer->phone }}</li>
-
-
                                 </ul>
                             </div>
 
