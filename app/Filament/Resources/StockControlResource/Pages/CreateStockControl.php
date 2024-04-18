@@ -9,4 +9,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateStockControl extends CreateRecord
 {
     protected static string $resource = StockControlResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+    return $this->getResource()::getUrl('index');
+    }
 }

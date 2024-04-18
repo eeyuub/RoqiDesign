@@ -142,7 +142,7 @@ class FactureResource extends Resource
 
                     ->schema([
 
-                        Select::make('product_option_id')
+                        Select::make('product_option_id')->required()
                         ->relationship('productOption', 'option',fn (Builder $query) => $query->where('isFactured',true)->where('qteDispo','>',0))
                         ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
                         ->preload()

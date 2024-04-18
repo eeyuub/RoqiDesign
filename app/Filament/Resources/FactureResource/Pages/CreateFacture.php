@@ -9,4 +9,10 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateFacture extends CreateRecord
 {
     protected static string $resource = FactureResource::class;
+
+
+    protected function getRedirectUrl(): string
+    {
+    return $this->getResource()::getUrl('index');
+    }
 }
