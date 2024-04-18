@@ -169,49 +169,29 @@ table tr td:last-child {
           </div>
 
           <table class="invoice-info-container">
-            <tr>
 
-              <td rowspan="2" class="client-name">
-                {{-- Client Information: --}}
-              </td>
-              <td class="client-name">
 
-                {{-- ROQI DESIGN --}}
-              </td>
-            </tr>
 
             <tr>
+
+
               <td>
-                {{-- 123 Main Street --}}
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Facture Date: <strong>{{ $order->factureDate }}</strong>
-                Facture Date: <strong>{{ $order->factureDate }}</strong>
-              </td>
-              <td >
 
-                Client: <br><strong>{{ $order->customer->name }}</strong>
-                <br><strong>{{ $order->customer->address }}</strong>
-                <br><strong>{{ $order->customer->phone }}</strong>
-                <br><strong>{{ $order->customer->phone }}</strong>
-                <br><strong>{{ $order->customer->phone }}</strong>
-              </td>
-
-            {{--   <td rowspan="2" class="client-name">
-                 {{ $order->customer->name }}
                 Client: <strong>{{ $order->customer->name }}</strong>
-              </td> --}}
-            </tr>
-            <tr>
-              <td>
-                Facture No: <strong>{{ $order->numeroFacture }}</strong>
+                <br>Adresse: <strong>{{ $order->customer->address }}</strong>
+                <br>Telephone: <strong>{{ $order->customer->phone }}</strong>
+                <br>Fix: <strong>{{ $order->customer->fix }}</strong>
+                <br>RC: <strong>{{ $order->customer->RC }}</strong>
+                <br>ICE: <strong>{{ $order->customer->ICE }}</strong>
               </td>
               <td>
-                {{-- ROQIDESIGN@useanvil.com --}}
+                Facture Date: <strong>{{ $order->orderDate }}</strong><br>
+                Facture No: <strong>{{ $order->orderNumber }}</strong>
               </td>
+
+
             </tr>
+
           </table>
 
 
