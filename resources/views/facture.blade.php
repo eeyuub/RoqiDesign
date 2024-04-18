@@ -177,12 +177,32 @@ table tr td:last-child {
 
               <td>
 
-                Client: <strong>{{ $order->customer->name }}</strong>
-                <br>Adresse: <strong>{{ $order->customer->address }}</strong>
-                <br>Telephone: <strong>{{ $order->customer->phone }}</strong>
-                <br>Fix: <strong>{{ $order->customer->fix }}</strong>
-                <br>RC: <strong>{{ $order->customer->RC }}</strong>
-                <br>ICE: <strong>{{ $order->customer->ICE }}</strong>
+
+                @if($order->customer->name)
+                    Client: <strong>{{ $order->customer->name }}</strong>
+                @endif
+                <br>
+                @if($order->customer->address)
+                    Adresse: <strong>{{ $order->customer->address }}</strong>
+                @endif
+                <br>
+                @if($order->customer->phone)
+                    Telephone: <strong>{{ $order->customer->phone }}</strong>
+                @endif
+                <br>
+                @if($order->customer->fix)
+                    Fix: <strong>{{ $order->customer->fix }}</strong>
+                @endif
+                <br>
+                @if($order->customer->RC)
+                    RC: <strong>{{ $order->customer->RC }}</strong>
+                @endif
+                <br>
+                @if($order->customer->ICE)
+                    ICE: <strong>{{ $order->customer->ICE }}</strong>
+                @endif
+
+
               </td>
               <td>
                 Facture No: <strong>{{ $order->numeroFacture }}</strong><br>
