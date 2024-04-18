@@ -185,8 +185,8 @@ table tr td:last-child {
                 <br>ICE: <strong>{{ $order->customer->ICE }}</strong>
               </td>
               <td>
-                Facture Date: <strong>{{ $order->orderDate }}</strong><br>
-                Facture No: <strong>{{ $order->orderNumber }}</strong>
+                Facture Date: <strong>{{ $order->factureDate }}</strong><br>
+                Facture No: <strong>{{ $order->numeroFacture }}</strong>
               </td>
 
 
