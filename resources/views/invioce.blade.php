@@ -311,7 +311,7 @@ body{
         <div class="footer">
             <div class="footer-info">
                 <span>
-                Siam N° Raz De chaussee Bd.Haj Habib Marins Pêcheurs-AGADIR-R.C:4511  ICE: 002683065000046 Fix:+212528382788/tel:+212661104297/Email:roqidesign@gmail.com
+                Wiam N° Raz De chaussee Bd.Haj Habib Marins Pêcheurs-AGADIR-R.C:4511  ICE: 002683065000046 Fix:+212528382788/tel:+212661104297/Email:roqidesign@gmail.com
             </span>
             </div>
         </div>
