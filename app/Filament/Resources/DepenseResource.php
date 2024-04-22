@@ -108,6 +108,8 @@ class DepenseResource extends Resource
                 ->formatStateUsing(function ($state, Depense $depense) {
                     return number_format((float)$state, 2, '.', '') . ' DH';
                 }),
+                TextColumn::make('datePurchase')->label('La date de Depense')->icon('heroicon-o-calendar-days')->sortable()->toggleable()
+                ->date(),
                 TextColumn::make('created_at')->icon('heroicon-o-calendar-days')->sortable()->toggleable()
                 ->date(),
 
