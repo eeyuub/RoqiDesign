@@ -197,13 +197,13 @@ class OrderResource extends Resource
                                         }
                                     )
                                     ->reactive(),
-                                    TextInput::make('unitPrice')->numeric()->columnSpan(2)
+                                    TextInput::make('unitPrice')->inputMode('decimal')->numeric()->columnSpan(2)
                                     ->reactive()
                                     ->live(true)
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         self::updateItemTotal($get, $set);
                                     }),
-                                    TextInput::make('quantity')->numeric()->columnSpan(2)
+                                    TextInput::make('quantity')->inputMode('decimal')->numeric()->columnSpan(2)->inputMode('decimal')
                                     ->reactive()
                                     ->live(true)
                                     ->afterStateUpdated(function (Get $get, Set $set) {
@@ -211,7 +211,7 @@ class OrderResource extends Resource
                                     })
                                     ,
 
-                                    TextInput::make('totalAmount')->numeric()->columnSpan(3)->columnSpan(2)->prefix('MAD'),
+                                    TextInput::make('totalAmount')->inputMode('decimal')->numeric()->columnSpan(3)->columnSpan(2)->prefix('MAD'),
 
                                 ])->reorderable(true)
                                 ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
@@ -271,7 +271,7 @@ class OrderResource extends Resource
 
                 ->schema([
                     Textarea::make('note'),
-                    TextInput::make('totalAmount')->numeric()->reactive()->prefix('MAD'),
+                    TextInput::make('totalAmount')->inputMode('decimal')->numeric()->reactive()->prefix('MAD'),
                 ])->columnSpan(1)
 
 

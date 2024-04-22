@@ -125,10 +125,10 @@ class FactureResource extends Resource
                 ->icon('heroicon-o-banknotes')
                 ->schema([
 
-                    TextInput::make('totalHT')->label('TOTAL HT')->numeric()->reactive()->prefix('MAD'),
-                    TextInput::make('tva')->label('TVA')->numeric()->reactive()->prefix('%')->default(20)->maxValue(100),
-                    // TextInput::make('remise')->label('REMISE')->numeric()->reactive()->prefix('%')->maxValue(100)->default(0),
-                    TextInput::make('totalTTC')->label('TOTAL TTC')->numeric()->reactive()->prefix('MAD'),
+                    TextInput::make('totalHT')->label('TOTAL HT')->inputMode('decimal')->numeric()->reactive()->prefix('MAD'),
+                    TextInput::make('tva')->label('TVA')->inputMode('decimal')->numeric()->reactive()->prefix('%')->default(20)->maxValue(100),
+                    // TextInput::make('remise')->label('REMISE')->inputMode('decimal')->numeric()->reactive()->prefix('%')->maxValue(100)->default(0),
+                    TextInput::make('totalTTC')->label('TOTAL TTC')->inputMode('decimal')->numeric()->reactive()->prefix('MAD'),
                 ])->columnSpan(1),
 
                 Section::make('Facture Produit')
@@ -168,16 +168,16 @@ class FactureResource extends Resource
                             }
                         )
                         ->reactive(),
-                        TextInput::make('unitPrice')->numeric()
+                        TextInput::make('unitPrice')->inputMode('decimal')->numeric()
                         ->reactive()
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::updateItemTotal($get, $set);
                         }),
                         TextInput::make('designation'),
 
-                        TextInput::make('qteDisponible')->numeric()->readOnly()
+                        TextInput::make('qteDisponible')->inputMode('decimal')->numeric()->readOnly()
                         ->disabled(),
-                        TextInput::make('quantity')->numeric()->default(1)->minValue(1)->maxValue(function(get $get){
+                        TextInput::make('quantity')->inputMode('decimal')->numeric()->default(1)->minValue(1)->maxValue(function(get $get){
                             return $get('qteDisponible');
                         })
                         ->reactive()

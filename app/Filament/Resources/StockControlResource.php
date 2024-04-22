@@ -96,18 +96,18 @@ class StockControlResource extends Resource
                         )
                         ->reactive(),
 
-                        TextInput::make('unitPrice')->numeric()
+                        TextInput::make('unitPrice')->inputMode('decimal')->numeric()
                         ->reactive()
                         ->afterStateUpdated(function (Set $set, Get $get) {
                             $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')));
                         }),
-                        TextInput::make('quantity')->numeric()
+                        TextInput::make('quantity')->inputMode('decimal')->numeric()
                         ->reactive()
                         ->afterStateUpdated(function (Set $set, Get $get) {
                             $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')));
                         }),
 
-                        TextInput::make('totalAmount')->numeric(),
+                        TextInput::make('totalAmount')->inputMode('decimal')->numeric(),
 
                     ])->reorderable(true)
                     /*  ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {

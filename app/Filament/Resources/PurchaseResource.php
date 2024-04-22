@@ -161,7 +161,7 @@ class PurchaseResource extends Resource
                                     )
                                     ->reactive(),
 
-                                    TextInput::make('unitPrice')->numeric()->columnSpan(2)
+                                    TextInput::make('unitPrice')->inputMode('decimal')->numeric()->columnSpan(2)
                                     ->reactive()
                                     ->live(true)
                                     ->afterStateUpdated(function (Get $get, Set $set) {
@@ -170,7 +170,7 @@ class PurchaseResource extends Resource
                                     /* ->afterStateUpdated(function (Set $set, Get $get) {
                                         $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')));
                                     }) */
-                                    TextInput::make('quantity')->numeric()->columnSpan(2)
+                                    TextInput::make('quantity')->inputMode('decimal')->numeric()->columnSpan(2)
                                     ->reactive()
                                     ->live(true)
                                     ->afterStateUpdated(function (Get $get, Set $set) {
@@ -181,7 +181,7 @@ class PurchaseResource extends Resource
                                     }) */
                                     ,
 
-                                    TextInput::make('totalAmount')->numeric()->columnSpan(2)->prefix('MAD'),
+                                    TextInput::make('totalAmount')->inputMode('decimal')->numeric()->columnSpan(2)->prefix('MAD'),
 
                                 ])->reorderable(true)
                                 ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
@@ -216,7 +216,7 @@ class PurchaseResource extends Resource
 
                                 ->reorderableWithButtons(),
 
-                                TextInput::make('totalAmount')->numeric()->reactive(),
+                                TextInput::make('totalAmount')->inputMode('decimal')->numeric()->reactive(),
 
                             ])
 
@@ -229,7 +229,7 @@ class PurchaseResource extends Resource
 
                 ->schema([
                     Textarea::make('note'),
-                    TextInput::make('totalAmount')->numeric()->reactive()->prefix('MAD'),
+                    TextInput::make('totalAmount')->inputMode('decimal')->numeric()->reactive()->prefix('MAD'),
                    /*  Placeholder::make('Total Amount')->reactive()
                     ->content(
                         function (Get $get,Set $set)  {

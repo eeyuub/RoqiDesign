@@ -76,7 +76,8 @@ class DepenseResource extends Resource
                     ->inputMode('decimal')
                     ->afterStateUpdated(fn (Set $set,Get $get) => $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')))),
 
-                    TextInput::make('unitPrice')->numeric()
+                    TextInput::make('unitPrice')
+                    ->numeric()
                     ->inputMode('decimal')
                     ->live(debounce: 1000)
                     ->afterStateUpdated(fn (Set $set,Get $get) => $set('totalAmount', floatval($get('quantity')) * floatval($get('unitPrice')))),

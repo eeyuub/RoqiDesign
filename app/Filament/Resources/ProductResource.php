@@ -185,10 +185,10 @@ class ProductResource extends Resource
                         TextInput::make('code'),
                         TextInput::make('option')->label('Option Name')->live(onBlur: true),
                         TextInput::make('note'),
-                        TextInput::make('quantity')->type('number'),
-                        TextInput::make('unitPrice')->type('number'),
+                        TextInput::make('quantity')->numeric()->inputMode('decimal'),
+                        TextInput::make('unitPrice')->numeric()->inputMode('decimal'),
                         Toggle::make('isFactured')->columnSpan(3)->reactive()->requiredWith('qteDispo'),
-                        TextInput::make('qteDispo')->default(0)->requiredWith('isFactured')->type('number')->label('quantité Disponible pour facturée')
+                        TextInput::make('qteDispo')->inputMode('decimal')->default(0)->requiredWith('isFactured')->type('number')->label('quantité Disponible pour facturée')
                         ->hidden(
                             fn (Get $get): bool => $get('isFactured') == false
                         ),
