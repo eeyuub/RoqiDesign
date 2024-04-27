@@ -273,10 +273,6 @@ class FactureResource extends Resource
                     ])->reorderable(true)
                      ->columns(3)
                     ->cloneable()
-
-                    ->deleteAction(
-                        fn (ActionRepeater $action,Get $get, Set $set) => self::updateItemTotal($get, $set),
-                    )
                     ->defaultItems(0)
                     ->reorderableWithButtons()
 
