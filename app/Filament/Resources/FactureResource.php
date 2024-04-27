@@ -31,6 +31,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Actions\Action as ActionRepeater;
 
 class FactureResource extends Resource
 {
@@ -272,7 +273,7 @@ class FactureResource extends Resource
                      ->columns(3)
                     ->cloneable()
                     ->deleteAction(
-                        fn (Action $action) => $action->requiresConfirmation(),
+                        fn (ActionRepeater $action) => $action->requiresConfirmation(),
                     )
                     ->defaultItems(0)
                     ->reorderableWithButtons()
