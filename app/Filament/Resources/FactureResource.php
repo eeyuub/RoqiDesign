@@ -229,7 +229,7 @@ class FactureResource extends Resource
                     })
                      ->columns(3)
                     ->cloneable()
-
+                    ->defaultItems(0)
                     ->reorderableWithButtons()
 
                 ])->columnSpan(2),
@@ -272,13 +272,9 @@ class FactureResource extends Resource
                      ->columns(3)
                     ->cloneable()
                     ->deleteAction(function (Forms\Get $get, Forms\Set $set) {
-                        Notification::ask(
-                            'Delete Item?',
-                            "Are you sure you want to delete this item? This action cannot be undone.",
-                            'Delete',
-                            'Cancel'
-                        );
+
                     })
+                    ->defaultItems(0)
                     ->reorderableWithButtons()
 
                 ])->columnSpan(2),
