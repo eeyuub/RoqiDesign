@@ -22,6 +22,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -271,7 +272,12 @@ class FactureResource extends Resource
                      ->columns(3)
                     ->cloneable()
                     ->deleteAction(function (Forms\Get $get, Forms\Set $set) {
-                        self::updateItemTotal($get, $set);
+                        Notification::ask(
+                            'Delete Item?',
+                            "Are you sure you want to delete this item? This action cannot be undone.",
+                            'Delete',
+                            'Cancel'
+                        );
                     })
                     ->reorderableWithButtons()
 
