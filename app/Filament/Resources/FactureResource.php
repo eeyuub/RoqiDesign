@@ -270,7 +270,9 @@ class FactureResource extends Resource
                     ])->reorderable(true)
                      ->columns(3)
                     ->cloneable()
-
+                    ->deleteAction(function (Forms\Get $get, Forms\Set $set) {
+                        self::updateItemTotal($get, $set);
+                    })
                     ->reorderableWithButtons()
 
                 ])->columnSpan(2),
