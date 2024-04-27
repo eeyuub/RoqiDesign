@@ -147,6 +147,7 @@ class FactureResource extends Resource
                         ->relationship('productOption', 'option',fn (Builder $query) => $query->where('isFactured',true)->where('qteDispo','>',0))
                         ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
                         ->preload()
+                        ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                         ->native(false)
                         ->searchable()
                         ->optionsLimit(5)
@@ -272,7 +273,10 @@ class FactureResource extends Resource
                      ->columns(3)
                     ->cloneable()
                     ->deleteAction(function (Forms\Get $get, Forms\Set $set) {
-
+                        Notification::make()
+                        ->success()
+                        ->title('User restored')
+                        ->body('The user has been restored successfully.');
                     })
                     ->defaultItems(0)
                     ->reorderableWithButtons()
