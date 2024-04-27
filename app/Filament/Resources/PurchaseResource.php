@@ -163,7 +163,7 @@ class PurchaseResource extends Resource
 
                                     TextInput::make('unitPrice')->inputMode('decimal')->numeric()->columnSpan(2)
                                     ->reactive()
-                                    ->live(true)
+                                    ->live(onBlur: true)
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         self::updateItemTotal($get, $set);
                                     }),
@@ -172,7 +172,7 @@ class PurchaseResource extends Resource
                                     }) */
                                     TextInput::make('quantity')->inputMode('decimal')->numeric()->columnSpan(2)
                                     ->reactive()
-                                    ->live(true)
+                                    ->live(onBlur: true)
                                     ->afterStateUpdated(function (Get $get, Set $set) {
                                         self::updateItemTotal($get, $set);
                                     })

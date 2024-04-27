@@ -181,7 +181,7 @@ class FactureResource extends Resource
                             return $get('qteDisponible');
                         })
                         ->reactive()
-                        ->live(true)
+                        ->live(onBlur: true)
 
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::updateItemTotal($get, $set);
@@ -249,13 +249,14 @@ class FactureResource extends Resource
 
                         TextInput::make('unitPrice')->numeric()
                         ->reactive()
+                        ->live(onBlur: true)
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::updateItemTotal($get, $set);
                         }),
 
                         TextInput::make('quantity')->numeric()->default(1)->minValue(1)
                         ->reactive()
-                        ->live(true)
+                        ->live(onBlur: true)
 
                         ->afterStateUpdated(function (Get $get, Set $set) {
                             self::updateItemTotal($get, $set);
