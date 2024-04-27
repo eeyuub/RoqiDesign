@@ -271,12 +271,9 @@ class FactureResource extends Resource
                     ])->reorderable(true)
                      ->columns(3)
                     ->cloneable()
-                    ->deleteAction(function (Forms\Get $get, Forms\Set $set) {
-                        Notification::make()
-                        ->success()
-                        ->title('User restored')
-                        ->body('The user has been restored successfully.');
-                    })
+                    ->deleteAction(
+                        fn (Action $action) => $action->requiresConfirmation(),
+                    )
                     ->defaultItems(0)
                     ->reorderableWithButtons()
 
