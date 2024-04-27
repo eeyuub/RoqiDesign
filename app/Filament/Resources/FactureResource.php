@@ -266,12 +266,18 @@ class FactureResource extends Resource
 
 
 
+
                         TextInput::make('productSize')->required(),
                         TextInput::make('totalAmount')->numeric()->columnSpan(2),
 
                     ])->reorderable(true)
                      ->columns(3)
                     ->cloneable()
+                    ->extraItemActions([
+                        ActionRepeater::make("UpdateTotal")->action(function (Get $get, Set $set){
+                            self::updateItemTotal($get, $set);
+                        })
+                    ])
                     ->deleteAction(
                         fn (ActionRepeater $action) => $action->requiresConfirmation(),
                     )
