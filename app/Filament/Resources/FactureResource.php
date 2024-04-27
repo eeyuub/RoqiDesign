@@ -273,13 +273,9 @@ class FactureResource extends Resource
                     ])->reorderable(true)
                      ->columns(3)
                     ->cloneable()
-                    ->extraItemActions([
-                        ActionRepeater::make("UpdateTotal")->action(function (Get $get, Set $set){
-                            self::updateItemTotal($get, $set);
-                        })
-                    ])
+
                     ->deleteAction(
-                        fn (ActionRepeater $action) => $action->requiresConfirmation(),
+                        fn (ActionRepeater $action,Get $get, Set $set) => self::updateItemTotal($get, $set),
                     )
                     ->defaultItems(0)
                     ->reorderableWithButtons()
