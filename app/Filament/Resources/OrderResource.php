@@ -70,231 +70,272 @@ class OrderResource extends Resource
             ->schema([
 
                 Section::make('Créer une Vente')
-                ->description('Cette page pour créer un  commande')
-                ->icon('heroicon-o-shopping-bag')->schema([
-                    Wizard::make([
-                        Step::make('Customer')
-                        ->label('Client details')
-                        ->icon('heroicon-s-user')
-                            ->schema([
-
-                                TextInput::make('orderNumber')
-                                ->prefix('Numero de Commande')
-                                ->hiddenLabel()
-
-                                ->unique(ignoreRecord:true)
-                                ->default(
-                                    function ()  {
-                                        $latestOrder = Order::latest('id')->first();
-
-                                        $orderNumber = 'ORDER';
-                                        $dateComponent = now()->format('Ymd');
-                                        $increment = 1;
-
-                                        if ($latestOrder) {
-                                            $latestOrderDateComponent = substr($latestOrder->orderNumber, 5, 8);
-
-
-                                            if ($latestOrderDateComponent === $dateComponent) {
-                                                $increment = (int)substr($latestOrder->orderNumber, -4) + 1;
-                                            }
-                                        }
-
-                                        $orderNumber .= $dateComponent . str_pad($increment, 4, '0', STR_PAD_LEFT);
-
-                                        return $orderNumber;
-                                    }
-                                ),
-                                Select::make('customer_id')
-                                ->prefix('Client')
-                                ->hiddenLabel()
-                                ->required()
-                                ->relationship(name: 'Customer', titleAttribute: 'name')
-                                ->preload()
-                                ->native(false)
-                                ->searchable()
-                                ->optionsLimit(5)
-                                ->live()
-
-                                ->editOptionForm([
-                                    TextInput::make('name')->type('text')->unique(ignoreRecord:true)->required(),
-                                    TextInput::make('address')->type('text'),
-                                    TextInput::make('phone')->type('tel')->unique(ignoreRecord:true),
-                                    TextInput::make('note')->type('text'),
-                                    Select::make('gender')
-                                        ->options(customerGender::class)
-                                        ->native(false),
-                                    Select::make('isActive')
-                                    ->options(isActive::class)
-                                    ->native(false)
-
-                                ])
-                                ->createOptionForm([
-                                    TextInput::make('name')->type('text')->unique(ignoreRecord:true)->required(),
-                                    TextInput::make('address')->type('text'),
-                                    TextInput::make('phone')->type('tel')->unique(ignoreRecord:true),
-                                    TextInput::make('note')->type('text'),
-                                    Select::make('gender')
-                                        ->options(customerGender::class)
-                                        ->native(false),
-                                    Select::make('isActive')
-                                    ->options(isActive::class)
-                                    ->native(false)
-
-                                ])
-                                ,
-                                select::make('orderPayment')
-                                ->options(payment::class)
-                                ->prefix('Type de Paiement')
-                                ->hiddenLabel()
-                                ->native(false),
-                                Select::make('orderStatus')
-                                ->prefix('Status de Commande')
-                                ->hiddenLabel()
-                                ->options(Status::class)
-                                ->native(false),
-                                DatePicker::make('orderDate')
-                                ->prefix('Date de Commande')
-                                ->hiddenLabel()->native(false)->default(now()),
-                                DatePicker::make('shippedDate')->prefix('Date denvoi')
-                                ->hiddenLabel()->native(false)->default(now()),
-                                DatePicker::make('deliveredDate')->prefix('Date de Livraison')
-                                ->hiddenLabel()->native(false)->default(now()),
-
-
-                            ])
-                            ,
-                        Step::make('Items')
-                            ->icon('heroicon-m-shopping-bag')
-                            ->label('Articles')
-                            ->schema([
-                                Repeater::make('orderProducts')->relationship()
-                                ->label('Selected Items')
+                    ->description('Cette page pour créer un  commande')
+                    ->icon('heroicon-o-shopping-bag')->schema([
+                        Wizard::make([
+                            Step::make('Customer')
+                                ->label('Client details')
+                                ->icon('heroicon-s-user')
                                 ->schema([
 
-                                    Select::make('product_option_id')
-                                    ->relationship(name: 'productOption', titleAttribute: 'option')
-                                    ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
-                                    ->preload()
-                                    ->native(false)
-                                    ->searchable()
-                                    ->optionsLimit(5)->columnSpan(2)
-                                    ->afterStateUpdated(
-                                        function (Forms\Set $set, $state, ?orderProduct $record,Get $get): void {
-                                            if ($record !== null) {
-                                                return;
+                                    TextInput::make('orderNumber')
+                                        ->prefix('Numero de Commande')
+                                        ->hiddenLabel()
+
+                                        ->unique(ignoreRecord: true)
+                                        ->default(
+                                            function () {
+                                                $latestOrder = Order::latest('id')->first();
+
+                                                $orderNumber = 'ORDER';
+                                                $dateComponent = now()->format('Ymd');
+                                                $increment = 1;
+
+                                                if ($latestOrder) {
+                                                    $latestOrderDateComponent = substr($latestOrder->orderNumber, 5, 8);
+
+
+                                                    if ($latestOrderDateComponent === $dateComponent) {
+                                                        $increment = (int)substr($latestOrder->orderNumber, -4) + 1;
+                                                    }
+                                                }
+
+                                                $orderNumber .= $dateComponent . str_pad($increment, 4, '0', STR_PAD_LEFT);
+
+                                                return $orderNumber;
+                                            }
+                                        ),
+                                    Select::make('customer_id')
+                                        ->prefix('Client')
+                                        ->hiddenLabel()
+                                        ->required()
+                                        ->relationship(name: 'Customer', titleAttribute: 'name')
+                                        ->preload()
+                                        ->native(false)
+                                        ->searchable()
+                                        ->optionsLimit(5)
+                                        ->live()
+
+                                        ->editOptionForm([
+                                            TextInput::make('name')->type('text')->unique(ignoreRecord: true)->required(),
+                                            TextInput::make('address')->type('text'),
+                                            TextInput::make('phone')->type('tel')->unique(ignoreRecord: true),
+                                            TextInput::make('note')->type('text'),
+                                            Select::make('gender')
+                                                ->options(customerGender::class)
+                                                ->native(false),
+                                            Select::make('isActive')
+                                                ->options(isActive::class)
+                                                ->native(false)
+
+                                        ])
+                                        ->createOptionForm([
+                                            TextInput::make('name')->type('text')->unique(ignoreRecord: true)->required(),
+                                            TextInput::make('address')->type('text'),
+                                            TextInput::make('phone')->type('tel')->unique(ignoreRecord: true),
+                                            TextInput::make('note')->type('text'),
+                                            Select::make('gender')
+                                                ->options(customerGender::class)
+                                                ->native(false),
+                                            Select::make('isActive')
+                                                ->options(isActive::class)
+                                                ->native(false)
+
+                                        ]),
+                                    select::make('orderPayment')
+                                        ->options(payment::class)
+                                        ->prefix('Type de Paiement')
+                                        ->hiddenLabel()
+                                        ->native(false),
+                                    Select::make('orderStatus')
+                                        ->prefix('Status de Commande')
+                                        ->hiddenLabel()
+                                        ->options(Status::class)
+                                        ->native(false),
+                                    DatePicker::make('orderDate')
+                                        ->prefix('Date de Commande')
+                                        ->hiddenLabel()->native(false)->default(now()),
+                                    DatePicker::make('shippedDate')->prefix('Date denvoi')
+                                        ->hiddenLabel()->native(false)->default(now()),
+                                    DatePicker::make('deliveredDate')->prefix('Date de Livraison')
+                                        ->hiddenLabel()->native(false)->default(now()),
+
+
+                                ]),
+                            Step::make('Items')
+                                ->icon('heroicon-m-shopping-bag')
+                                ->label('Articles')
+                                ->schema([
+                                    Section::make('Produit De Stock')
+                                    ->description('Les produits relier a ce Commande et est enregistré en stock')
+                                    ->icon('heroicon-o-cube')
+                                    ->schema([
+                                        Repeater::make('orderProducts')->relationship()
+                                        ->label('Selected Items')
+                                        ->schema([
+
+                                            Select::make('product_option_id')
+                                                ->relationship(name: 'productOption', titleAttribute: 'option')
+                                                ->getOptionLabelFromRecordUsing(fn (productOption $record) => "{$record->option} ({$record->code})")
+                                                ->preload()
+                                                ->native(false)
+                                                ->searchable()
+                                                ->optionsLimit(5)->columnSpan(2)
+                                                ->afterStateUpdated(
+                                                    function (Forms\Set $set, $state, ?orderProduct $record, Get $get): void {
+                                                        if ($record !== null) {
+                                                            return;
+                                                        }
+
+                                                        $sku = productOption::whereKey($state)->first();
+
+                                                        if ($sku === null) {
+                                                            return;
+                                                        }
+
+                                                        $set('unitPrice', $sku->unitPrice);
+                                                        $set('quantity', $sku->quantity);
+                                                        self::updateItemTotal($get, $set);
+                                                    }
+                                                )
+                                                ->reactive(),
+                                            TextInput::make('unitPrice')->inputMode('decimal')->numeric()->columnSpan(2)
+                                                ->reactive()
+                                                ->live(true)
+                                                ->afterStateUpdated(function (Get $get, Set $set) {
+                                                    self::updateItemTotal($get, $set);
+                                                }),
+                                            TextInput::make('quantity')->inputMode('decimal')->numeric()->columnSpan(2)->inputMode('decimal')
+                                                ->reactive()
+                                                ->live(true)
+                                                ->afterStateUpdated(function (Get $get, Set $set) {
+                                                    self::updateItemTotal($get, $set);
+                                                }),
+
+                                            TextInput::make('totalAmount')->inputMode('decimal')->numeric()->columnSpan(3)->columnSpan(2)->prefix('MAD'),
+
+                                        ])->reorderable(true)
+                                        ->mutateRelationshipDataBeforeSaveUsing(function (array $data, get $get): array {
+                                            $optionID = $data['product_option_id'];
+                                            $orderID = $get('id');
+
+                                            $option =  productOption::where('id', $optionID)->first();
+                                            $item = orderProduct::where(['order_id' => $orderID, 'product_option_id' => $optionID])->first();
+
+                                            if ($data['quantity'] == $item['quantity']) {
+                                                return $data;
                                             }
 
-                                            $sku = productOption::whereKey($state)->first();
+                                            $quantityDifference  =  $item->quantity - $data['quantity'];
+                                            $option->quantity += $quantityDifference;
 
-                                            if ($sku === null) {
-                                                return;
-                                            }
+                                            if ($option->isFactured) $option->qteDispo -= $quantityDifference;
 
-                                            $set('unitPrice', $sku->unitPrice);
-                                            $set('quantity', $sku->quantity);
-                                            self::updateItemTotal($get, $set);
-                                        }
-                                    )
-                                    ->reactive(),
-                                    TextInput::make('unitPrice')->inputMode('decimal')->numeric()->columnSpan(2)
-                                    ->reactive()
-                                    ->live(true)
-                                    ->afterStateUpdated(function (Get $get, Set $set) {
-                                        self::updateItemTotal($get, $set);
-                                    }),
-                                    TextInput::make('quantity')->inputMode('decimal')->numeric()->columnSpan(2)->inputMode('decimal')
-                                    ->reactive()
-                                    ->live(true)
-                                    ->afterStateUpdated(function (Get $get, Set $set) {
-                                        self::updateItemTotal($get, $set);
-                                    })
-                                    ,
+                                            $option->save();
 
-                                    TextInput::make('totalAmount')->inputMode('decimal')->numeric()->columnSpan(3)->columnSpan(2)->prefix('MAD'),
+                                            return $data;
+                                        })
+                                        ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
 
-                                ])->reorderable(true)
-                                ->mutateRelationshipDataBeforeSaveUsing(function (array $data,get $get): array {
-                                    $optionID=$data['product_option_id'];
-                                    $orderID = $get('id');
-
-                                    $option =  productOption::where('id',$optionID)->first();
-                                    $item = orderProduct::where(['order_id'=>$orderID ,'product_option_id'=>$optionID])->first();
-
-                                    if($data['quantity']==$item['quantity']){
-                                        return $data;
-                                    }
-
-                                    $quantityDifference  =  $item->quantity - $data['quantity'];
-                                    $option->quantity += $quantityDifference;
-
-                                    if($option->isFactured) $option->qteDispo -= $quantityDifference;
-
-                                    $option->save();
-
-                                    return $data;
-                                })
-                                 ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
-
-                                    /*   dd($data['product_option_id']);
+                                            /*   dd($data['product_option_id']);
                                         return null; */
-                                        $item =  productOption::where('id',$data['product_option_id'])->first();
-                                        // dd($item->isFactured);
-                                        // dd($get('orderProducts'));
-                                        $item->quantity -= $data['quantity'];
+                                            $item =  productOption::where('id', $data['product_option_id'])->first();
+                                            // dd($item->isFactured);
+                                            // dd($get('orderProducts'));
+                                            $item->quantity -= $data['quantity'];
 
-                                        // $item->isFactured ? $item->isFactured->quantityToFacture += $data['quantity'] : null;
-                                        if($item->isFactured) $item->qteDispo += $data['quantity'];
-                                        $item->save();
-                                        return $data;
+                                            // $item->isFactured ? $item->isFactured->quantityToFacture += $data['quantity'] : null;
+                                            if ($item->isFactured) $item->qteDispo += $data['quantity'];
+                                            $item->save();
+                                            return $data;
+                                        })
+                                        ->deleteAction(
+                                            fn (Action $action) => $action->requiresConfirmation(),
+
+                                        )->columns(4)
+                                        ->cloneable()
+
+                                        ->reorderableWithButtons()
+                                        ]),
+
+                                    Section::make('Produit Étendu')
+                                    ->description('Les produits relier a ce Commande et n\'est pas enregistré en stock')
+                                    ->icon('heroicon-o-cube')->schema([
+
+                                        Repeater::make('orderExtends')->relationship()
+                                        ->label('Selected Items')
+                                        ->schema([
+
+                                            TextInput::make('designation')->required(),
+
+                                            TextInput::make('unitPrice')->numeric()
+                                            ->reactive()
+                                            ->live(onBlur: true)
+                                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                                self::updateItemTotal($get, $set);
+                                            }),
+
+                                            TextInput::make('quantity')->numeric()->default(1)->minValue(1)
+                                            ->reactive()
+                                            ->live(onBlur: true)
+
+                                            ->afterStateUpdated(function (Get $get, Set $set) {
+                                                self::updateItemTotal($get, $set);
+                                            }),
 
 
-                                })
-                                ->deleteAction(
-                                    fn (Action $action) => $action->requiresConfirmation(),
-
-                                 )->columns(4)
-                                ->cloneable()
-
-                                ->reorderableWithButtons()
 
 
+                                            TextInput::make('productSize')->required(),
+                                            TextInput::make('totalAmount')->numeric()->columnSpan(2),
 
-                            ])
+                                        ])->reorderable(true)
+                                         ->columns(3)
+                                        ->cloneable()
+                                        ->defaultItems(0)
+                                        ->reorderableWithButtons()
 
-                    ])
-                                ])->columnSpan(2),
+                                    ])->columnSpan(2),
+
+                                ])
+
+                        ])
+                    ])->columnSpan(2),
 
                 Section::make('Calcule de Commande de Ventes')
-                ->description('Deatils des calcule')
-                ->icon('heroicon-o-banknotes')
+                    ->description('Deatils des calcule')
+                    ->icon('heroicon-o-banknotes')
 
-                ->schema([
-                    Textarea::make('note'),
-                    TextInput::make('totalAmount')->inputMode('decimal')->numeric()->reactive()->prefix('MAD'),
-                ])->columnSpan(1)
+                    ->schema([
+                        Textarea::make('note'),
+                        TextInput::make('totalAmount')->inputMode('decimal')->numeric()->reactive()->prefix('MAD'),
+                    ])->columnSpan(1)
 
 
-           ])->columns(3);
+            ])->columns(3);
     }
 
-    public static function updateItemTotal(Get $get, Set $set):void{
+    public static function updateItemTotal(Get $get, Set $set): void
+    {
         $total = floatval($get('quantity')) * floatval($get('unitPrice'));
         $set('totalAmount',  number_format($total, 2, '.', ''));
 
         $TotalItems = floatval(collect($get('../../orderProducts'))->pluck('totalAmount')->sum());
+        $TotalItemsExtends = floatval(collect($get('../../orderExtends'))->pluck('totalAmount')->sum());
 
-        $set('../../totalAmount', number_format($TotalItems, 2, '.', ''));
+        $totalCommande=  $set('../../totalHT', number_format(($TotalItems + $TotalItemsExtends), 2, '.', ''));
+
+        $set('../../totalAmount', number_format($totalCommande, 2, '.', ''));
     }
 
     public static function updateTotals(Get $get, Set $set): void
-{
-    // Retrieve all selected products and remove empty rows
-    $selectedProducts = collect($get('orderProducts'));
-    dd($selectedProducts);
-    // Retrieve prices for all selected products
-     $prices = productOption::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
-/*
+    {
+        // Retrieve all selected products and remove empty rows
+        $selectedProducts = collect($get('orderProducts'));
+        dd($selectedProducts);
+        // Retrieve prices for all selected products
+        $prices = productOption::find($selectedProducts->pluck('product_id'))->pluck('price', 'id');
+        /*
     // Calculate subtotal based on the selected products and quantities
     $subtotal = $selectedProducts->reduce(function ($subtotal, $product) use ($prices) {
         return $subtotal + ($prices[$product['product_id']] * $product['quantity']);
@@ -303,7 +344,7 @@ class OrderResource extends Resource
     // Update the state with the new values
     $set('subtotal', number_format($subtotal, 2, '.', ''));
     $set('total', number_format($subtotal + ($subtotal * ($get('taxes') / 100)), 2, '.', '')); */
-}
+    }
 
     public static function table(Table $table): Table
     {
@@ -314,45 +355,45 @@ class OrderResource extends Resource
                 TextColumn::make('totalAmount')->icon('heroicon-o-banknotes')->summarize(Sum::make()->formatStateUsing(function ($state) {
                     return number_format((float)$state, 2, '.', '') . ' DH';
                 }))
-                ->formatStateUsing(function ($state, Order $order) {
-                    return number_format((float)$order->totalAmount, 2, '.', '') . ' DH';
-                }),
+                    ->formatStateUsing(function ($state, Order $order) {
+                        return number_format((float)$order->totalAmount, 2, '.', '') . ' DH';
+                    }),
                 Tables\Columns\TextColumn::make('orderStatus')
-                ->badge(),
+                    ->badge(),
 
                 TextColumn::make('orderDate')->icon('heroicon-o-calendar-days'),
 
             ])->defaultSort('created_at', 'desc')
             ->filters([
                 Filter::make('created_at')
-                ->form([
-        DatePicker::make('created_from'),
-        DatePicker::make('created_until')->default(now()),
-                   ])
-            ->query(function (Builder $query, array $data): Builder {
-                    return $query
-                        ->when(
-                            $data['created_from'],
-                             fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
-                          )
-                        ->when(
-                            $data['created_until'],
-                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
-                        );
-            })
+                    ->form([
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until')->default(now()),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 // Tables\Actions\ButtonAction::make('asdsa')->url(route('downPDF')),
                 Tables\Actions\Action::make('view')
                     ->icon('heroicon-m-printer')
                     ->label('Facture')
-                    ->url(fn (Order $record): string => route('downPDF',['id'=> $record->id]), shouldOpenInNewTab: true),
-                Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
-                Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
+                    ->url(fn (Order $record): string => route('downPDF', ['id' => $record->id]), shouldOpenInNewTab: true),
+                Tables\Actions\EditAction::make()->hidden(fn ($record) => $record->trashed()),
+                Tables\Actions\ViewAction::make()->hidden(fn ($record) => $record->trashed()),
                 /* Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())->before(function (get $get,$state) {
                  dd($state);
                 }) */
-                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),
+                Tables\Actions\DeleteAction::make()->hidden(fn ($record) => $record->trashed()),
                 Tables\Actions\RestoreAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
             ])
