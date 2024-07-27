@@ -349,9 +349,10 @@ class OrderResource extends Resource
                     ->url(fn (Order $record): string => route('downPDF',['id'=> $record->id]), shouldOpenInNewTab: true),
                 Tables\Actions\EditAction::make()->hidden(fn($record)=>$record->trashed()),
                 Tables\Actions\ViewAction::make()->hidden(fn($record)=>$record->trashed()),
-                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())->before(function (get $get,$state) {
+                /* Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed())->before(function (get $get,$state) {
                  dd($state);
-                }),
+                }) */
+                Tables\Actions\DeleteAction::make()->hidden(fn($record)=>$record->trashed()),
                 Tables\Actions\RestoreAction::make(),
                 Tables\Actions\ForceDeleteAction::make(),
             ])
