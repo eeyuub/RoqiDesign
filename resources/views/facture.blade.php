@@ -186,13 +186,13 @@ table tr td:last-child {
                 <br>Adresse: <strong>{{ $order->customer->address }}</strong>
                 @endif
 
-                @if($order->customer->phone)
+                {{-- @if($order->customer->phone)
                 <br>Telephone: <strong>{{ $order->customer->phone }}</strong>
                 @endif
 
                 @if($order->customer->fix)
                 <br>Fix: <strong>{{ $order->customer->fix }}</strong>
-                @endif
+                @endif --}}
 
                 @if($order->customer->RC)
                 <br>RC: <strong>{{ $order->customer->RC }}</strong>

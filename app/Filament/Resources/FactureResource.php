@@ -98,7 +98,13 @@ class FactureResource extends Resource
                                         ->native(false),
                                     Select::make('isActive')
                                     ->options(isActive::class)
-                                    ->native(false)
+                                    ->native(false),
+                                    Section::make('Coordonnées de la société/Client')
+                                    ->icon('heroicon-o-hashtag')->schema([
+                                        TextInput::make('fix')->type('text'),
+                                        TextInput::make('ICE')->type('text')->label('ICE'),
+                                        TextInput::make('RC')->type('text')->label('RC'),
+                                    ])
 
                                 ])
                                 ->createOptionForm([
@@ -111,8 +117,8 @@ class FactureResource extends Resource
                                         ->native(false),
                                     Select::make('isActive')
                                     ->options(isActive::class)
-                                    ->native(false)
-                                    ,Section::make('Coordonnées de la société/Client')
+                                    ->native(false),
+                                    Section::make('Coordonnées de la société/Client')
                                     ->icon('heroicon-o-hashtag')->schema([
                                         TextInput::make('fix')->type('text'),
                                         TextInput::make('ICE')->type('text')->label('ICE'),
@@ -273,7 +279,7 @@ class FactureResource extends Resource
 
 
 
-                        TextInput::make('productSize')->required(),
+                        TextInput::make('productSize'),
                         TextInput::make('totalAmount')->numeric()->columnSpan(2),
 
                     ])->reorderable(true)
