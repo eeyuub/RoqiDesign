@@ -112,6 +112,12 @@ class FactureResource extends Resource
                                     Select::make('isActive')
                                     ->options(isActive::class)
                                     ->native(false)
+                                    ,Section::make('Coordonnées de la société/Client')
+                                    ->icon('heroicon-o-hashtag')->schema([
+                                        TextInput::make('fix')->type('text'),
+                                        TextInput::make('ICE')->type('text')->label('ICE'),
+                                        TextInput::make('RC')->type('text')->label('RC'),
+                                    ])
 
                                 ])
                                 ,
